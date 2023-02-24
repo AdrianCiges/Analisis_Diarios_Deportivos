@@ -14,20 +14,20 @@ import io
 st.set_page_config(layout="wide", page_icon="🗞️", page_title="Visibilidad Deportiva")
 	
 app_mode = st.sidebar.selectbox('Ir a:',['🏠 Inicio', '💻 Web','🏊🏻 Deporte','⚽ Sección','🚻 Género redactor/a'])
-df = pd.read_excel('../data/repercusion_noticias_deportivas.xlsx')
+df = pd.read_excel('../../data/repercusion_noticias_deportivas.xlsx')
 df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizacion'], axis=1)
 
-image_inicio = Image.open("../img/inicio.jpg")
+image_inicio = Image.open("../../img/inicio.jpg")
 with io.BytesIO() as output:
     image_inicio.save(output, format="PNG")
     b64_1 = base64.b64encode(output.getvalue()).decode()
 
-image_visibilidad = Image.open("../img/visibilidad.jpg")
+image_visibilidad = Image.open("../../img/visibilidad.jpg")
 with io.BytesIO() as output:
     image_visibilidad.save(output, format="PNG")
     b64_2 = base64.b64encode(output.getvalue()).decode()
 
-image_repercusión = Image.open("../img/repercusion.jpg")
+image_repercusión = Image.open("../../img/repercusion.jpg")
 with io.BytesIO() as output:
     image_repercusión.save(output, format="PNG")
     b64_3 = base64.b64encode(output.getvalue()).decode()
