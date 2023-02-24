@@ -5,4 +5,5 @@ Pillow==9.3.0
 urllib3==1.26.7
 seaborn==0.11.2
 plotly==5.5.0
-streamlit-components==0.13.6
+streamlit_extras==0.2.4
+openpyxl
