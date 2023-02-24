@@ -3,6 +3,6 @@ pandas==1.2.5
 pillow==9.3.0
 plotly==5.4.0
 click==7.1.2
-streamlit==1.2.0
+streamlit==1.19.0
 streamlit_extras==0.2.4
 openpyxl
