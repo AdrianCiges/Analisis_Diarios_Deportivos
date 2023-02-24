@@ -1,6 +1,7 @@
 matplotlib==3.6.0
 pandas==1.2.5
-Pillow==9.3.0
+pillow==9.3.0
+plotly==5.4.0
 regex==2022.9.13
 streamlit==1.15.2
 streamlit_extras==0.2.4
