@@ -4,7 +4,6 @@ import pylab as plt
 from PIL import Image
 import webbrowser
 import urllib.request
-import seaborn as sns
 import plotly.express as px
 import plotly.graph_objs as go
 from streamlit.components.v1 import html
