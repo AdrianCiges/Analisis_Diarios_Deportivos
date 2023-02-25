@@ -56,7 +56,7 @@ if app_mode == '🏠 Inicio':
     if condition:
         filtered_df = df.query(condition)[df.columns]
         st.write("Noticias totales:", filtered_df.shape[0])
-        st.write("#### ✂️ Datos filtrados:")
+        st.write("#### ✂️ Datos Filtrados:")
         st.write(filtered_df)
     else:
         st.write("Noticias totales:", df.shape[0])
