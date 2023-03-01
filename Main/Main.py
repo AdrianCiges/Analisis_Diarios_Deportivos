@@ -13,7 +13,7 @@ import io
 
 st.set_page_config(layout="wide", page_icon="🗞️", page_title="Visibilidad Deportiva")
 	
-app_mode = st.sidebar.selectbox('Ir a:',['🏠 Inicio', '💻 Web','🏊🏻 Deporte','⚽ Sección','🚻 Género redactor/a'])
+app_mode = st.sidebar.selectbox('Ir a:',['🏠 Inicio', '💻 Web','🏊🏻 Deporte','⚽ Equipo','🚻 Género redactor/a'])
 df = pd.read_excel('./data/repercusion_noticias_deportivas.xlsx')
 df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizacion'], axis=1)
 
@@ -31,6 +31,7 @@ image_repercusión = Image.open("./img/repercusion.jpg")
 with io.BytesIO() as output:
     image_repercusión.save(output, format="PNG")
     b64_3 = base64.b64encode(output.getvalue()).decode()
+
 
 def apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
                   operando_comentario, option_comentario, operando_tweets, option_tweets,
@@ -70,15 +71,17 @@ def apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
     if operando_exito != '(todos)':
         filters.append(eval(f"df['exito_tweet'] {operando_exito} {option_exito}"))
     if filters:
-        df = df[np.logical_and.reduce(filters)]
+        filtered_df = df[np.logical_and.reduce(filters)]
+    else:
+        filtered_df = df.copy()
     
-    return df
+    return filtered_df
 
 
 if app_mode == '🏠 Inicio':
 
-    with st.expander('_¿Cómo usar esta página?_'):
-        st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)        
+    #with st.expander('_¿Cómo usar esta página?_'):
+        #st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)        
 
     st.title('👀 Visibilidad Deportiva')
 
@@ -93,86 +96,82 @@ if app_mode == '🏠 Inicio':
     st.markdown("En este apartado puedes visualizar los datos recogidos durante el mes de enero [portadas desde el 04/01/2023 al 23/01/2023] aplicando las condiciones de filtrado que estimes oportundas.")
     
 
-    col1, col2, col3, col4 = st.columns(4)
+    with st.form("my_form"):
 
-    expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-    with expander_filtros1:
         col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
-            option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
+        expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-        with col2:
-            option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
+        with expander_filtros1:
+            col1, col2, col3, col4 = st.columns(4)
 
-        with col3:
-            option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
+            with col1:
+                option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
 
-        with col4:
-            option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
+            with col2:
+                option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
+
+            with col3:
+                option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
+
+            with col4:
+                option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
 
 
 
-    expander_filtros2 = st.expander("Filtro de MÉTRICAS")
+        expander_filtros2 = st.expander("Filtro de MÉTRICAS")
 
-    with expander_filtros2:
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+        with expander_filtros2:
+            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
 
-        with col1:
-            operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_comentario = st.number_input('nº comentarios', value=0)
-            st.write(f"Rango: [{df['comentarios'].min()} - {df['comentarios'].max()}]")
+            with col1:
+                operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_comentario = st.slider('', min_value=df['comentarios'].min(), max_value=df['comentarios'].max())
 
-        with col2:
-            operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_tweets = st.number_input('nº tweets', value=0)
-            st.write(f"Rango: [{df['tweets'].min()} - {df['tweets'].max()}]")
+            with col2:
+                operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_tweets = st.slider('', min_value=df['tweets'].min(), max_value=df['tweets'].max())
 
-        with col3:
-            operando_alcance = st.selectbox('ALCANCE TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_alcance = st.number_input('nº cuentas alcanzadas', value=0)
-            st.write(f"Rango: [{df['alcance_twitter'].min()} - {df['alcance_twitter'].max()}]")
+            with col3:
+                operando_alcance = st.selectbox('ALCANCE TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_alcance = st.slider('', min_value=df['alcance_twitter'].min(), max_value=df['alcance_twitter'].max())
 
-        with col4:
-            operando_likes = st.selectbox('LIKES TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_likes = st.number_input('nº likes', value=0)
-            st.write(f"Rango: [{df['likes_twitter'].min()} - {df['likes_twitter'].max()}]")
+            with col4:
+                operando_likes = st.selectbox('LIKES TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_likes = st.slider('', min_value=df['likes_twitter'].min(), max_value=df['likes_twitter'].max())
 
-        with col5:
-            operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_rt = st.number_input('nº retweets', value=0)
-            st.write(f"Rango: [{df['retweets'].min()} - {df['retweets'].max()}]")
+            with col5:
+                operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_rt = st.slider('', min_value=df['retweets'].min(), max_value=df['retweets'].max())
 
-        with col6:
-            operando_respuestas = st.selectbox('RESPUESTAS TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_respuestas = st.number_input('nº respuestas', value=0)
-            st.write(f"Rango: [{df['respuestas_twitter'].min()} - {df['respuestas_twitter'].max()}]")
+            with col6:
+                operando_respuestas = st.selectbox('RESPUESTAS TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_respuestas = st.slider('', min_value=df['respuestas_twitter'].min(), max_value=df['respuestas_twitter'].max())
 
-        with col7:
-            operando_repercusion = st.selectbox('REPERCUSIÓN TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_repercusion = st.number_input('índice de repercusión', value=0)
-            st.write(f"Rango: [{df['repercusion_twitter'].min()} - {df['repercusion_twitter'].max()}]")
+            with col7:
+                operando_repercusion = st.selectbox('REPERCUSIÓN TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_repercusion = st.slider('', min_value=df['repercusion_twitter'].min(), max_value=df['repercusion_twitter'].max())
 
-        with col8:
-            operando_exito = st.selectbox('ÉXITO TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_exito = st.number_input('índice de éxito', value=0)
-            st.write(f"Rango: [{df['exito_tweet'].min()} - {round(df['exito_tweet'].max())}]")
+            with col8:
+                operando_exito = st.selectbox('ÉXITO TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_exito = st.slider('', min_value=df['exito_tweet'].min(), max_value=df['exito_tweet'].max())
 
-    filtrar = st.button('Filtrar')
+        submitted = st.form_submit_button("Filtrar Datos")
 
-    if filtrar:
-        filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
+        if submitted:
+            filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
                   operando_comentario, option_comentario, operando_tweets, option_tweets,
                   operando_alcance, option_alcance, operando_likes, option_likes,
                   operando_rt, option_rt, operando_respuestas, option_respuestas,
                   operando_repercusion, option_repercusion, operando_exito, option_exito)
-        st.write("#### ✂️ Datos filtrados:")
-        st.write(filtered_df)
-        st.write("Noticias totales:", filtered_df.shape[0])
+            st.write("#### ✂️ Datos filtrados:")
+            st.write("Noticias totales:", filtered_df.shape[0])   
+            st.write(filtered_df)
 
-    else:
-        st.write("Noticias totales:", df.shape[0])
+        else:
+        
+            st.write("Noticias totales:", df.shape[0])   
 
 	
     st.write('\n')
@@ -211,95 +210,88 @@ elif app_mode == '💻 Web':
     x = 'web'
     y = st.sidebar.selectbox('Visibilidad según:', ['seccion', 'equipo', 'genero_redactor','repercusion'])
 
-    if y != 'repercusion':
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
-    else:
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
+    #if y != 'repercusion':
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
+    #else:
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
 
     st.title('💻 Visibilidad por WEB')
 
-    col1, col2, col3, col4 = st.columns(4)
+    with st.form("my_form"):
 
-    expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-    with expander_filtros1:
         col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
-            option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
+        expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-        with col2:
-            option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
+        with expander_filtros1:
+            col1, col2, col3, col4 = st.columns(4)
 
-        with col3:
-            option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
+            with col1:
+                option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
 
-        with col4:
-            option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
+            with col2:
+                option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
 
+            with col3:
+                option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
 
-
-    expander_filtros2 = st.expander("Filtro de MÉTRICAS")
-
-    with expander_filtros2:
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
-
-        with col1:
-            operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_comentario = st.number_input('nº comentarios', value=0)
-            st.write(f"Rango: [{df['comentarios'].min()} - {df['comentarios'].max()}]")
-
-        with col2:
-            operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_tweets = st.number_input('nº tweets', value=0)
-            st.write(f"Rango: [{df['tweets'].min()} - {df['tweets'].max()}]")
-
-        with col3:
-            operando_alcance = st.selectbox('ALCANCE TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_alcance = st.number_input('nº cuentas alcanzadas', value=0)
-            st.write(f"Rango: [{df['alcance_twitter'].min()} - {df['alcance_twitter'].max()}]")
-
-        with col4:
-            operando_likes = st.selectbox('LIKES TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_likes = st.number_input('nº likes', value=0)
-            st.write(f"Rango: [{df['likes_twitter'].min()} - {df['likes_twitter'].max()}]")
-
-        with col5:
-            operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_rt = st.number_input('nº retweets', value=0)
-            st.write(f"Rango: [{df['retweets'].min()} - {df['retweets'].max()}]")
-
-        with col6:
-            operando_respuestas = st.selectbox('RESPUESTAS TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_respuestas = st.number_input('nº respuestas', value=0)
-            st.write(f"Rango: [{df['respuestas_twitter'].min()} - {df['respuestas_twitter'].max()}]")
-
-        with col7:
-            operando_repercusion = st.selectbox('REPERCUSIÓN TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_repercusion = st.number_input('índice de repercusión', value=0)
-            st.write(f"Rango: [{df['repercusion_twitter'].min()} - {df['repercusion_twitter'].max()}]")
-
-        with col8:
-            operando_exito = st.selectbox('ÉXITO TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_exito = st.number_input('índice de éxito', value=0)
-            st.write(f"Rango: [{df['exito_tweet'].min()} - {round(df['exito_tweet'].max())}]")
+            with col4:
+                option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
 
 
-    filtrar = st.button('Filtrar')
 
-    if filtrar:
-        filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
+        expander_filtros2 = st.expander("Filtro de MÉTRICAS")
+
+        with expander_filtros2:
+            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+
+            with col1:
+                operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_comentario = st.slider('', min_value=df['comentarios'].min(), max_value=df['comentarios'].max())
+
+            with col2:
+                operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_tweets = st.slider('', min_value=df['tweets'].min(), max_value=df['tweets'].max())
+
+            with col3:
+                operando_alcance = st.selectbox('ALCANCE TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_alcance = st.slider('', min_value=df['alcance_twitter'].min(), max_value=df['alcance_twitter'].max())
+
+            with col4:
+                operando_likes = st.selectbox('LIKES TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_likes = st.slider('', min_value=df['likes_twitter'].min(), max_value=df['likes_twitter'].max())
+
+            with col5:
+                operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_rt = st.slider('', min_value=df['retweets'].min(), max_value=df['retweets'].max())
+
+            with col6:
+                operando_respuestas = st.selectbox('RESPUESTAS TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_respuestas = st.slider('', min_value=df['respuestas_twitter'].min(), max_value=df['respuestas_twitter'].max())
+
+            with col7:
+                operando_repercusion = st.selectbox('REPERCUSIÓN TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_repercusion = st.slider('', min_value=df['repercusion_twitter'].min(), max_value=df['repercusion_twitter'].max())
+
+            with col8:
+                operando_exito = st.selectbox('ÉXITO TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_exito = st.slider('', min_value=df['exito_tweet'].min(), max_value=df['exito_tweet'].max())
+
+        submitted = st.form_submit_button("Filtrar Datos")
+
+        if submitted:
+            filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
                   operando_comentario, option_comentario, operando_tweets, option_tweets,
                   operando_alcance, option_alcance, operando_likes, option_likes,
                   operando_rt, option_rt, operando_respuestas, option_respuestas,
                   operando_repercusion, option_repercusion, operando_exito, option_exito)
+        else:
+            filtered_df = df.copy()
 
-    else:
-        filtered_df = df.copy()
-    
-    st.write("Noticias totales:", df.shape[0])
+        st.write("Noticias totales:", filtered_df.shape[0]) 
 
 
     with st.expander('_Ver datos_'): 
@@ -318,7 +310,7 @@ elif app_mode == '💻 Web':
 
         fig.update_layout(
         title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
+        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
         xaxis_tickfont=dict(size=25),
@@ -368,98 +360,88 @@ elif app_mode == '💻 Web':
 elif app_mode == '🏊🏻 Deporte':
 
     x = 'seccion'
-    y = st.sidebar.selectbox('Visibilidad según:', ['web','equipo', 'genero_redactor', 'repercusion'])
+    y = st.sidebar.selectbox('Visibilidad según:', ['web' ,'equipo', 'genero_redactor', 'repercusion'])
 
-    if y != 'repercusion':
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
-    else:
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
+    #if y != 'repercusion':
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
+    #else:
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
 
     st.title('🏊🏻 Visibilidad por DEPORTE')
 
-    col1, col2, col3, col4 = st.columns(4)
+    with st.form("my_form"):
 
-    expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-    with expander_filtros1:
         col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
-            option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
+        expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-        with col2:
-            option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
+        with expander_filtros1:
+            col1, col2, col3, col4 = st.columns(4)
 
-        with col3:
-            option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
+            with col1:
+                option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
 
-        with col4:
-            option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
+            with col2:
+                option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
 
+            with col3:
+                option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
 
-
-    expander_filtros2 = st.expander("Filtro de MÉTRICAS")
-
-    with expander_filtros2:
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
-
-        with col1:
-            operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_comentario = st.number_input('nº comentarios', value=0)
-            st.write(f"Rango: [{df['comentarios'].min()} - {df['comentarios'].max()}]")
-
-        with col2:
-            operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_tweets = st.number_input('nº tweets', value=0)
-            st.write(f"Rango: [{df['tweets'].min()} - {df['tweets'].max()}]")
-
-        with col3:
-            operando_alcance = st.selectbox('ALCANCE TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_alcance = st.number_input('nº cuentas alcanzadas', value=0)
-            st.write(f"Rango: [{df['alcance_twitter'].min()} - {df['alcance_twitter'].max()}]")
-
-        with col4:
-            operando_likes = st.selectbox('LIKES TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_likes = st.number_input('nº likes', value=0)
-            st.write(f"Rango: [{df['likes_twitter'].min()} - {df['likes_twitter'].max()}]")
-
-        with col5:
-            operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_rt = st.number_input('nº retweets', value=0)
-            st.write(f"Rango: [{df['retweets'].min()} - {df['retweets'].max()}]")
-
-        with col6:
-            operando_respuestas = st.selectbox('RESPUESTAS TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_respuestas = st.number_input('nº respuestas', value=0)
-            st.write(f"Rango: [{df['respuestas_twitter'].min()} - {df['respuestas_twitter'].max()}]")
-
-        with col7:
-            operando_repercusion = st.selectbox('REPERCUSIÓN TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_repercusion = st.number_input('índice de repercusión', value=0)
-            st.write(f"Rango: [{df['repercusion_twitter'].min()} - {df['repercusion_twitter'].max()}]")
-
-        with col8:
-            operando_exito = st.selectbox('ÉXITO TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_exito = st.number_input('índice de éxito', value=0)
-            st.write(f"Rango: [{df['exito_tweet'].min()} - {round(df['exito_tweet'].max())}]")
+            with col4:
+                option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
 
 
-    filtrar = st.button('Filtrar')
 
-    if filtrar:
-        filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
-                  operando_comentario, option_comentario, operando_tweets, option_tweets,
-                  operando_alcance, option_alcance, operando_likes, option_likes,
-                  operando_rt, option_rt, operando_respuestas, option_respuestas,
-                  operando_repercusion, option_repercusion, operando_exito, option_exito)
+        expander_filtros2 = st.expander("Filtro de MÉTRICAS")
 
-    else:
-        filtered_df = df.copy()
-    
-    st.write("Noticias totales:", df.shape[0])
+        with expander_filtros2:
+            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
 
+            with col1:
+                operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_comentario = st.slider('', min_value=df['comentarios'].min(), max_value=df['comentarios'].max())
+
+            with col2:
+                operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_tweets = st.slider('', min_value=df['tweets'].min(), max_value=df['tweets'].max())
+
+            with col3:
+                operando_alcance = st.selectbox('ALCANCE TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_alcance = st.slider('', min_value=df['alcance_twitter'].min(), max_value=df['alcance_twitter'].max())
+
+            with col4:
+                operando_likes = st.selectbox('LIKES TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_likes = st.slider('', min_value=df['likes_twitter'].min(), max_value=df['likes_twitter'].max())
+
+            with col5:
+                operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_rt = st.slider('', min_value=df['retweets'].min(), max_value=df['retweets'].max())
+
+            with col6:
+                operando_respuestas = st.selectbox('RESPUESTAS TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_respuestas = st.slider('', min_value=df['respuestas_twitter'].min(), max_value=df['respuestas_twitter'].max())
+
+            with col7:
+                operando_repercusion = st.selectbox('REPERCUSIÓN TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_repercusion = st.slider('', min_value=df['repercusion_twitter'].min(), max_value=df['repercusion_twitter'].max())
+
+            with col8:
+                operando_exito = st.selectbox('ÉXITO TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_exito = st.slider('', min_value=df['exito_tweet'].min(), max_value=df['exito_tweet'].max())
+
+        submitted = st.form_submit_button("Filtrar Datos")
+        if submitted:
+            filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
+                      operando_comentario, option_comentario, operando_tweets, option_tweets,
+                      operando_alcance, option_alcance, operando_likes, option_likes,
+                      operando_rt, option_rt, operando_respuestas, option_respuestas,
+                      operando_repercusion, option_repercusion, operando_exito, option_exito)
+        else:
+            filtered_df = df.copy()
+        st.write("Noticias totales:", filtered_df.shape[0]) 
     with st.expander('_Ver datos_'): 
         filtered_df 
 
@@ -476,10 +458,10 @@ elif app_mode == '🏊🏻 Deporte':
 
         fig.update_layout(
         title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
+        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
-        xaxis_tickfont=dict(size=25),
+        xaxis_tickfont=dict(size=18),
         yaxis_tickfont=dict(size=12),
         legend_font=dict(size=20),
         xaxis=dict(tickangle=30)
@@ -514,7 +496,7 @@ elif app_mode == '🏊🏻 Deporte':
         xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',
         legend_title=f'<b style="font-size:1.6em">{w}</b>',
-        xaxis_tickfont=dict(size=25),
+        xaxis_tickfont=dict(size=18),
         yaxis_tickfont=dict(size=12),
         legend_font=dict(size=20),
         barmode='stack',
@@ -530,95 +512,87 @@ elif app_mode == '⚽ Equipo':
     x = 'equipo'
     y = st.sidebar.selectbox('Visibilidad según:',['web','seccion','genero_redactor','repercusion'])
 
-    if y != 'repercusion':
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
-    else:
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
+    #if y != 'repercusion':
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
+    #else:
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
 
     st.title('⚽ Visibilidad por EQUIPO')
 
-    col1, col2, col3, col4 = st.columns(4)
+    with st.form("my_form"):
 
-    expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-    with expander_filtros1:
         col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
-            option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
+        expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-        with col2:
-            option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
+        with expander_filtros1:
+            col1, col2, col3, col4 = st.columns(4)
 
-        with col3:
-            option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
+            with col1:
+                option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
 
-        with col4:
-            option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
+            with col2:
+                option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
 
+            with col3:
+                option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
 
-
-    expander_filtros2 = st.expander("Filtro de MÉTRICAS")
-
-    with expander_filtros2:
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
-
-        with col1:
-            operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_comentario = st.number_input('nº comentarios', value=0)
-            st.write(f"Rango: [{df['comentarios'].min()} - {df['comentarios'].max()}]")
-
-        with col2:
-            operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_tweets = st.number_input('nº tweets', value=0)
-            st.write(f"Rango: [{df['tweets'].min()} - {df['tweets'].max()}]")
-
-        with col3:
-            operando_alcance = st.selectbox('ALCANCE TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_alcance = st.number_input('nº cuentas alcanzadas', value=0)
-            st.write(f"Rango: [{df['alcance_twitter'].min()} - {df['alcance_twitter'].max()}]")
-
-        with col4:
-            operando_likes = st.selectbox('LIKES TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_likes = st.number_input('nº likes', value=0)
-            st.write(f"Rango: [{df['likes_twitter'].min()} - {df['likes_twitter'].max()}]")
-
-        with col5:
-            operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_rt = st.number_input('nº retweets', value=0)
-            st.write(f"Rango: [{df['retweets'].min()} - {df['retweets'].max()}]")
-
-        with col6:
-            operando_respuestas = st.selectbox('RESPUESTAS TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_respuestas = st.number_input('nº respuestas', value=0)
-            st.write(f"Rango: [{df['respuestas_twitter'].min()} - {df['respuestas_twitter'].max()}]")
-
-        with col7:
-            operando_repercusion = st.selectbox('REPERCUSIÓN TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_repercusion = st.number_input('índice de repercusión', value=0)
-            st.write(f"Rango: [{df['repercusion_twitter'].min()} - {df['repercusion_twitter'].max()}]")
-
-        with col8:
-            operando_exito = st.selectbox('ÉXITO TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_exito = st.number_input('índice de éxito', value=0)
-            st.write(f"Rango: [{df['exito_tweet'].min()} - {round(df['exito_tweet'].max())}]")
+            with col4:
+                option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
 
 
-    filtrar = st.button('Filtrar')
 
-    if filtrar:
-        filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
-                  operando_comentario, option_comentario, operando_tweets, option_tweets,
-                  operando_alcance, option_alcance, operando_likes, option_likes,
-                  operando_rt, option_rt, operando_respuestas, option_respuestas,
-                  operando_repercusion, option_repercusion, operando_exito, option_exito)
+        expander_filtros2 = st.expander("Filtro de MÉTRICAS")
 
-    else:
-        filtered_df = df.copy()
-    
-    st.write("Noticias totales:", df.shape[0])
+        with expander_filtros2:
+            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+
+            with col1:
+                operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_comentario = st.slider('', min_value=df['comentarios'].min(), max_value=df['comentarios'].max())
+
+            with col2:
+                operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_tweets = st.slider('', min_value=df['tweets'].min(), max_value=df['tweets'].max())
+
+            with col3:
+                operando_alcance = st.selectbox('ALCANCE TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_alcance = st.slider('', min_value=df['alcance_twitter'].min(), max_value=df['alcance_twitter'].max())
+
+            with col4:
+                operando_likes = st.selectbox('LIKES TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_likes = st.slider('', min_value=df['likes_twitter'].min(), max_value=df['likes_twitter'].max())
+
+            with col5:
+                operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_rt = st.slider('', min_value=df['retweets'].min(), max_value=df['retweets'].max())
+
+            with col6:
+                operando_respuestas = st.selectbox('RESPUESTAS TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_respuestas = st.slider('', min_value=df['respuestas_twitter'].min(), max_value=df['respuestas_twitter'].max())
+
+            with col7:
+                operando_repercusion = st.selectbox('REPERCUSIÓN TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_repercusion = st.slider('', min_value=df['repercusion_twitter'].min(), max_value=df['repercusion_twitter'].max())
+
+            with col8:
+                operando_exito = st.selectbox('ÉXITO TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_exito = st.slider('', min_value=df['exito_tweet'].min(), max_value=df['exito_tweet'].max())
+
+        submitted = st.form_submit_button("Filtrar Datos")
+        if submitted:
+            filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
+                      operando_comentario, option_comentario, operando_tweets, option_tweets,
+                      operando_alcance, option_alcance, operando_likes, option_likes,
+                      operando_rt, option_rt, operando_respuestas, option_respuestas,
+                      operando_repercusion, option_repercusion, operando_exito, option_exito)
+        else:
+            filtered_df = df.copy()
+        st.write("Noticias totales:", filtered_df.shape[0]) 
+
     with st.expander('_Ver datos_'): 
         filtered_df 
 
@@ -638,7 +612,7 @@ elif app_mode == '⚽ Equipo':
         xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
-        xaxis_tickfont=dict(size=25),
+        xaxis_tickfont=dict(size=15),
         yaxis_tickfont=dict(size=12),
         legend_font=dict(size=20),
         xaxis=dict(tickangle=45)
@@ -673,7 +647,7 @@ elif app_mode == '⚽ Equipo':
         xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',
         legend_title=f'<b style="font-size:1.6em">{w}</b>',
-        xaxis_tickfont=dict(size=25),
+        xaxis_tickfont=dict(size=15),
         yaxis_tickfont=dict(size=12),
         legend_font=dict(size=20),
         barmode='stack',
@@ -688,95 +662,86 @@ elif app_mode == '🚻 Género redactor/a':
     x = 'genero_redactor'
     y = st.sidebar.selectbox('Visibilidad según:',['web','seccion', 'equipo', 'repercusion'])
 
-    if y != 'repercusion':
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
-    else:
-        with st.expander('_¿Cómo usar esta página?_'):
-            st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
+    #if y != 'repercusion':
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_2}", use_column_width=True)
+    #else:
+        #with st.expander('_¿Cómo usar esta página?_'):
+            #st.image(f"data:image/png;base64,{b64_3}", use_column_width=True)
 
     st.title('🚻 Visibilidad por GÉNERO_REDACTOR/A')
 
-    col1, col2, col3, col4 = st.columns(4)
+    with st.form("my_form"):
 
-    expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-    with expander_filtros1:
         col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
-            option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
+        expander_filtros1 = st.expander("Filtros de DIMENSIONES")
 
-        with col2:
-            option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
+        with expander_filtros1:
+            col1, col2, col3, col4 = st.columns(4)
 
-        with col3:
-            option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
+            with col1:
+                option_web = st.multiselect('WEB', ['(todos)']+sorted(list(df['web'].unique())))
 
-        with col4:
-            option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
+            with col2:
+                option_seccion = st.multiselect('SECCIÓN', ['(todos)']+sorted(list(df['seccion'].unique())))
 
+            with col3:
+                option_equipo = st.multiselect('EQUIPO', ['(todos)']+sorted(list(df['equipo'].unique())))
 
-
-    expander_filtros2 = st.expander("Filtro de MÉTRICAS")
-
-    with expander_filtros2:
-        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
-
-        with col1:
-            operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_comentario = st.number_input('nº comentarios', value=0)
-            st.write(f"Rango: [{df['comentarios'].min()} - {df['comentarios'].max()}]")
-
-        with col2:
-            operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_tweets = st.number_input('nº tweets', value=0)
-            st.write(f"Rango: [{df['tweets'].min()} - {df['tweets'].max()}]")
-
-        with col3:
-            operando_alcance = st.selectbox('ALCANCE TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_alcance = st.number_input('nº cuentas alcanzadas', value=0)
-            st.write(f"Rango: [{df['alcance_twitter'].min()} - {df['alcance_twitter'].max()}]")
-
-        with col4:
-            operando_likes = st.selectbox('LIKES TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_likes = st.number_input('nº likes', value=0)
-            st.write(f"Rango: [{df['likes_twitter'].min()} - {df['likes_twitter'].max()}]")
-
-        with col5:
-            operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_rt = st.number_input('nº retweets', value=0)
-            st.write(f"Rango: [{df['retweets'].min()} - {df['retweets'].max()}]")
-
-        with col6:
-            operando_respuestas = st.selectbox('RESPUESTAS TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_respuestas = st.number_input('nº respuestas', value=0)
-            st.write(f"Rango: [{df['respuestas_twitter'].min()} - {df['respuestas_twitter'].max()}]")
-
-        with col7:
-            operando_repercusion = st.selectbox('REPERCUSIÓN TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_repercusion = st.number_input('índice de repercusión', value=0)
-            st.write(f"Rango: [{df['repercusion_twitter'].min()} - {df['repercusion_twitter'].max()}]")
-
-        with col8:
-            operando_exito = st.selectbox('ÉXITO TWITTER',['(todos)', '>', '>=', '=', '<=', '<'])
-            option_exito = st.number_input('índice de éxito', value=0)
-            st.write(f"Rango: [{df['exito_tweet'].min()} - {round(df['exito_tweet'].max())}]")
+            with col4:
+                option_genero = st.multiselect('GÉNERO REDACTOR', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
 
 
-    filtrar = st.button('Filtrar')
 
-    if filtrar:
-        filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
-                  operando_comentario, option_comentario, operando_tweets, option_tweets,
-                  operando_alcance, option_alcance, operando_likes, option_likes,
-                  operando_rt, option_rt, operando_respuestas, option_respuestas,
-                  operando_repercusion, option_repercusion, operando_exito, option_exito)
+        expander_filtros2 = st.expander("Filtro de MÉTRICAS")
 
-    else:
-        filtered_df = df.copy()
-    
-    st.write("Noticias totales:", df.shape[0])
+        with expander_filtros2:
+            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
+
+            with col1:
+                operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_comentario = st.slider('', min_value=df['comentarios'].min(), max_value=df['comentarios'].max())
+
+            with col2:
+                operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_tweets = st.slider('', min_value=df['tweets'].min(), max_value=df['tweets'].max())
+
+            with col3:
+                operando_alcance = st.selectbox('ALCANCE TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_alcance = st.slider('', min_value=df['alcance_twitter'].min(), max_value=df['alcance_twitter'].max())
+
+            with col4:
+                operando_likes = st.selectbox('LIKES TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_likes = st.slider('', min_value=df['likes_twitter'].min(), max_value=df['likes_twitter'].max())
+
+            with col5:
+                operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_rt = st.slider('', min_value=df['retweets'].min(), max_value=df['retweets'].max())
+
+            with col6:
+                operando_respuestas = st.selectbox('RESPUESTAS TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_respuestas = st.slider('', min_value=df['respuestas_twitter'].min(), max_value=df['respuestas_twitter'].max())
+
+            with col7:
+                operando_repercusion = st.selectbox('REPERCUSIÓN TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_repercusion = st.slider('', min_value=df['repercusion_twitter'].min(), max_value=df['repercusion_twitter'].max())
+
+            with col8:
+                operando_exito = st.selectbox('ÉXITO TW',['(todos)', '>', '>=', '==', '<=', '<'])
+                option_exito = st.slider('', min_value=df['exito_tweet'].min(), max_value=df['exito_tweet'].max())
+
+        submitted = st.form_submit_button("Filtrar Datos")
+        if submitted:
+            filtered_df = apply_filters(df, option_web, option_seccion, option_equipo, option_genero,
+                      operando_comentario, option_comentario, operando_tweets, option_tweets,
+                      operando_alcance, option_alcance, operando_likes, option_likes,
+                      operando_rt, option_rt, operando_respuestas, option_respuestas,
+                      operando_repercusion, option_repercusion, operando_exito, option_exito)
+        else:
+            filtered_df = df.copy()
+        st.write("Noticias totales:", filtered_df.shape[0]) 
 
     with st.expander('_Ver datos_'): 
         filtered_df 
