@@ -126,36 +126,52 @@ if app_mode == '🏠 Inicio':
             col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(8)
 
             with col1:
+                min_value = int(df['comentarios'].min())
+                max_value = int(df['comentarios'].max())
                 operando_comentario = st.selectbox('COMENTARIOS',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_comentario = st.slider('nº', min_value=df['comentarios'].min(), max_value=df['comentarios'].max())
+                option_comentario = st.slider('', min_value=min_value, max_value=max_value)
 
             with col2:
+                min_value = int(df['tweets'].min())
+                max_value = int(df['tweets'].max())
                 operando_tweets = st.selectbox('TWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_tweets = st.slider('nº', min_value=df['tweets'].min(), max_value=df['tweets'].max())
+                option_tweets = st.slider('', min_value=min_value, max_value=max_value)
 
             with col3:
+                min_value = int(df['alcance_twitter'].min())
+                max_value = int(df['alcance_twitter'].max())
                 operando_alcance = st.selectbox('ALCANCE TW',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_alcance = st.slider('nº', min_value=df['alcance_twitter'].min(), max_value=df['alcance_twitter'].max())
+                option_alcance = st.slider('', min_value=min_value, max_value=max_value)
 
             with col4:
+                min_value = int(df['likes_twitter'].min())
+                max_value = int(df['likes_twitter'].max())
                 operando_likes = st.selectbox('LIKES TW',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_likes = st.slider('nº', min_value=df['likes_twitter'].min(), max_value=df['likes_twitter'].max())
+                option_likes = st.slider('', min_value=min_value, max_value=max_value)
 
             with col5:
+                min_value = int(df['retweets'].min())
+                max_value = int(df['retweets'].max())
                 operando_rt = st.selectbox('RETWEETS',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_rt = st.slider('', min_value=df['retweets'].min(), max_value=df['retweets'].max())
+                option_rt = st.slider('', min_value=min_value, max_value=max_value)
 
             with col6:
+                min_value = int(df['respuestas_twitter'].min())
+                max_value = int(df['respuestas_twitter'].max())
                 operando_respuestas = st.selectbox('RESPUESTAS TW',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_respuestas = st.slider('', min_value=df['respuestas_twitter'].min(), max_value=df['respuestas_twitter'].max())
+                option_respuestas = st.slider('', min_value=min_value, max_value=max_value)
 
             with col7:
+                min_value = int(df['repercusion_twitter'].min())
+                max_value = int(df['repercusion_twitter'].max())
                 operando_repercusion = st.selectbox('REPERCUSIÓN TW',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_repercusion = st.slider('', min_value=df['repercusion_twitter'].min(), max_value=df['repercusion_twitter'].max())
+                option_repercusion = st.slider('', min_value=min_value, max_value=max_value)
 
             with col8:
+                min_value = int(df['exito_tweet'].min())
+                max_value = int(df['exito_tweet'].max())
                 operando_exito = st.selectbox('ÉXITO TW',['(todos)', '>', '>=', '==', '<=', '<'])
-                option_exito = st.slider('', min_value=df['exito_tweet'].min(), max_value=df['exito_tweet'].max())
+                option_exito = st.slider('', min_value=min_value, max_value=max_value)
 
         submitted = st.form_submit_button("Filtrar Datos")
 
