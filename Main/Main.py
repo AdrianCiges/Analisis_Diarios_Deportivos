@@ -99,43 +99,6 @@ with st.sidebar.container():
 
 
         if reiniciar:
-            # Reinicia los valores de los filtros
-            op_web = ['(todos)']
-            op_seccion = ['(todos)']
-            op_equipo = ['(todos)']
-            op_genero = ['(todos)']
-
-            min_value = int(df['comentarios'].min())
-            max_value = int(df['comentarios'].max())
-            op_comentarios = [min_value, max_value]
-
-            min_value = int(df['tweets'].min())
-            max_value = int(df['tweets'].max())
-            op_tweets = [min_value, max_value]
-
-            min_value = int(df['alcance_twitter'].min())
-            max_value = int(df['alcance_twitter'].max())
-            op_alcance = [min_value, max_value]
-
-            min_value = int(df['likes_twitter'].min())
-            max_value = int(df['likes_twitter'].max())
-            op_likes = [min_value, max_value]
-
-            min_value = int(df['retweets'].min())
-            max_value = int(df['retweets'].max())
-            op_retweets = [min_value, max_value]
-
-            min_value = int(df['respuestas_twitter'].min())
-            max_value = int(df['respuestas_twitter'].max())
-            op_respuestas = [min_value, max_value]
-
-            min_value = int(df['repercusion_twitter'].min())
-            max_value = int(df['repercusion_twitter'].max())
-            op_repercusion = [min_value, max_value]
-
-            min_value = int(df['exito_tweet'].min())
-            max_value = int(df['exito_tweet'].max())+1
-            op_exito = [min_value, max_value]
 
             # Reinicia el DataFrame filtrado
             filtered_df = df.copy()
@@ -220,7 +183,7 @@ elif app_mode == '💻 Web':
         data = data.reset_index()
 
         fig = plt.figure(figsize=(200, 80))
-        fig = px.bar(data, x='web', y=data.columns)
+        fig = px.bar(data, x=x, y=data.columns)
 
         fig.update_layout(
         title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
