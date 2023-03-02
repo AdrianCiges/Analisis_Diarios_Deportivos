@@ -13,7 +13,7 @@ import io
 
 st.set_page_config(layout="wide", page_icon="🗞️", page_title="Visibilidad Deportiva")
 
-df = pd.read_excel('../data/repercusion_noticias_deportivas.xlsx')
+df = pd.read_excel('./data/repercusion_noticias_deportivas.xlsx')
 df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizacion'], axis=1)
 df['exito_tweet'] = df['exito_tweet'].replace(np.nan, 0)
 df['repercusion_twitter'] = df['repercusion_twitter'].replace(np.nan, 0)
