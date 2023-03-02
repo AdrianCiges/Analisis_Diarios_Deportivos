@@ -220,7 +220,7 @@ elif app_mode == '💻 Web':
         data = data.reset_index()
 
         fig = plt.figure(figsize=(200, 80))
-        fig = px.bar(data, x=x, y=data.columns)
+        fig = px.bar(data, x='web', y=data.columns)
 
         fig.update_layout(
         title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
