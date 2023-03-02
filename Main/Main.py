@@ -35,6 +35,45 @@ def filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op
                      (df['exito_tweet'].between(op_exito[0], op_exito[1]))]
     return filtered_df
 
+def reset_filtros():
+    # Reinicia los valores de los filtros
+    op_web = ['(todos)']
+    op_seccion = ['(todos)']
+    op_equipo = ['(todos)']
+    op_genero = ['(todos)']
+
+    min_value = int(df['comentarios'].min())
+    max_value = int(df['comentarios'].max())
+    op_comentarios = [min_value, max_value]
+
+    min_value = int(df['tweets'].min())
+    max_value = int(df['tweets'].max())
+    op_tweets = [min_value, max_value]
+
+    min_value = int(df['alcance_twitter'].min())
+    max_value = int(df['alcance_twitter'].max())
+    op_alcance = [min_value, max_value]
+
+    min_value = int(df['likes_twitter'].min())
+    max_value = int(df['likes_twitter'].max())
+    op_likes = [min_value, max_value]
+
+    min_value = int(df['retweets'].min())
+    max_value = int(df['retweets'].max())
+    op_retweets = [min_value, max_value]
+
+    min_value = int(df['respuestas_twitter'].min())
+    max_value = int(df['respuestas_twitter'].max())
+    op_respuestas = [min_value, max_value]
+
+    min_value = int(df['repercusion_twitter'].min())
+    max_value = int(df['repercusion_twitter'].max())
+    op_repercusion = [min_value, max_value]
+
+    min_value = int(df['exito_tweet'].min())
+    max_value = int(df['exito_tweet'].max())+1
+    op_exito = [min_value, max_value]
+
 
 with st.sidebar.container():
 
@@ -101,7 +140,9 @@ with st.sidebar.container():
         if reiniciar:
 
             # Reinicia el DataFrame filtrado
-            filtered_df = df.copy()
+            reset_filtros()
+            filtered_df = filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito)
+
 
 try:
     filtered_df = filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito)
