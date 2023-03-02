@@ -141,11 +141,13 @@ with st.sidebar.container():
 
             # Reinicia el DataFrame filtrado
             reset_filtros()
-            filtered_df = filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito)
 
 
 try:
-    filtered_df = filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito)
+    if reiniciar:
+        filtered_df = df.copy()
+    else:
+        filtered_df = filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito)
 
 except:
     filtered_df = df.copy()
