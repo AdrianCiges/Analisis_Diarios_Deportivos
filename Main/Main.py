@@ -248,7 +248,7 @@ elif app_mode == '💻 Web':
         
         data = filtered_df.copy()
         data = data.reset_index()
-        df_suma = data.groupby(['web', w])[z].sum().reset_index()
+        df_suma = data.groupby([x, w])[z].sum().reset_index()
 
         fig = go.Figure()
 
@@ -319,7 +319,7 @@ elif app_mode == '🏊🏻 Deporte':
         
         data = filtered_df.copy()
         data = data.reset_index()
-        df_suma = data.groupby(['seccion', w])[z].sum().reset_index()
+        df_suma = data.groupby([x, w])[z].sum().reset_index()
 
         fig = go.Figure()
 
@@ -391,7 +391,7 @@ elif app_mode == '⚽ Equipo':
         
         data = filtered_df.copy()
         data = data.reset_index()
-        df_suma = data.groupby(['equipo', w])[z].sum().reset_index()
+        df_suma = data.groupby([x, w])[z].sum().reset_index()
 
         fig = go.Figure()
 
@@ -452,7 +452,7 @@ elif app_mode == '🚻 Género redactor/a':
         )
 
         st.plotly_chart(fig, use_container_width=True)
-        
+        x
     else:
         w = st.sidebar.selectbox('Repercusión según:', ['web', 'seccion','equipo'])
         z = st.sidebar.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
@@ -461,7 +461,7 @@ elif app_mode == '🚻 Género redactor/a':
         
         data = filtered_df.copy()
         data = data.reset_index()
-        df_suma = data.groupby(['genero_redactor', w])[z].sum().reset_index()
+        df_suma = data.groupby([x, w])[z].sum().reset_index()
 
         fig = go.Figure()
 
