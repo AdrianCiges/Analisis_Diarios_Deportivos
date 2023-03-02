@@ -37,10 +37,10 @@ def filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op
 
 def reset_filtros():
     # Reinicia los valores de los filtros
-    op_web = ['(todos)']
-    op_seccion = ['(todos)']
-    op_equipo = ['(todos)']
-    op_genero = ['(todos)']
+    op_web = []
+    op_seccion = []
+    op_equipo = []
+    op_genero = []
 
     min_value = int(df['comentarios'].min())
     max_value = int(df['comentarios'].max())
@@ -83,10 +83,10 @@ with st.sidebar.container():
 
         expander_filtros1 = st.expander("Filtros de DIMENSIONES")
         with expander_filtros1:
-            op_web = st.multiselect('**WEB**', ['(todos)']+sorted(list(df['web'].unique())))
-            op_seccion = st.multiselect('**SECCIÓN**', ['(todos)']+sorted(list(df['seccion'].unique())))
-            op_equipo = st.multiselect('**EQUIPO**', ['(todos)']+sorted(list(df['equipo'].unique())))
-            op_genero = st.multiselect('**GÉNERO REDACTOR**', ['(todos)']+sorted(list(df['genero_redactor'].unique())))
+            op_web = st.multiselect('**WEB**', sorted(list(df['web'].unique())))
+            op_seccion = st.multiselect('**SECCIÓN**', sorted(list(df['seccion'].unique())))
+            op_equipo = st.multiselect('**EQUIPO**', sorted(list(df['equipo'].unique())))
+            op_genero = st.multiselect('**GÉNERO REDACTOR**', sorted(list(df['genero_redactor'].unique())))
 
         expander_filtros2 = st.expander("Filtros de MÉTRICAS")
         with expander_filtros2:
