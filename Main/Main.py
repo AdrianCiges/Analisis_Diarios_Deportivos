@@ -22,7 +22,7 @@ df['repercusion_twitter'] = df['repercusion_twitter'].replace(np.nan, 0)
 
 def filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito):
     filtered_df = df[(df['web'].isin(op_web) if len(op_web) > 0 else True) & 
-                     (df['seccion'].isinop_(seccion) if len(op_seccion) > 0 else True) & 
+                     (df['seccion'].isin(op_seccion) if len(op_seccion) > 0 else True) & 
                      (df['equipo'].isin(op_equipo) if len(op_equipo) > 0 else True) & 
                      (df['genero_redactor'].isin(op_genero) if len(op_genero) > 0 else True) & 
                      (df['comentarios'].between(op_comentarios[0], op_comentarios[1])) &
