@@ -566,7 +566,7 @@ elif app_mode == '💻 Web':
                 st.markdown('##### Gráficos 📈')
 
                 with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor **nº de noticias** (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
                     st.plotly_chart(heatmap(x,y), use_container_width=True)   
 
 
@@ -575,19 +575,19 @@ elif app_mode == '💻 Web':
                     st.plotly_chart(area(x,y), use_container_width=True)    
 
                 with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia a cada {y} (indicado en la leyenda)_') 
+                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **diámetro**, mayor **nº de noticias** (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia a cada **{y}** (indicado en la leyenda)_') 
                     st.plotly_chart(burbujas(x,y), use_container_width=True)   
 
                 with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}._') 
+                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{y}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}._') 
                     st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
 
                 with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{y}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
                     st.plotly_chart(barras_log(x,y), use_container_width=True)   
 
                 with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **porcentaje de noticias** de cada {y} respecto al total para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **porcentaje de noticias** de cada {y} respecto al total para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{y}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
                     st.plotly_chart(barras_perc(x,y), use_container_width=True)   
 
                 with st.expander('Treemap', expanded=False): 
