@@ -13,12 +13,12 @@ import io
 
 st.set_page_config(layout="wide", page_icon="🗞️", page_title="Visibilidad Deportiva")
 
-df = pd.read_excel('./data/repercusion_noticias_deportivas.xlsx')
+df = pd.read_excel('../data/repercusion_noticias_deportivas.xlsx')
 df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizacion'], axis=1)
 df['exito_tweet'] = df['exito_tweet'].replace(np.nan, 0)
 df['repercusion_twitter'] = df['repercusion_twitter'].replace(np.nan, 0)
 
-image_inicio = Image.open("./img/notme2.png")
+image_inicio = Image.open("../img/notme2.png")
 with io.BytesIO() as output:
     image_inicio.save(output, format="PNG")
     b64_1 = base64.b64encode(output.getvalue()).decode()
@@ -113,6 +113,9 @@ def heatmap(x,y,z=0):
 
     if y != 'repercusion':
         ejey = y 
+
+        metrica = 'nº de noticias'
+
         data = filtered_df.groupby([x, y]).size().reset_index(name='counts')
         z = data['counts']
         y = data[y]
@@ -120,6 +123,9 @@ def heatmap(x,y,z=0):
 
     else:
         ejey = w 
+
+        metrica = z
+
         data = filtered_df.groupby([x, w]).sum().reset_index()
         z = data[z]
         y = data[w]
@@ -143,7 +149,7 @@ def heatmap(x,y,z=0):
     
     fig.update_layout(height=500, yaxis=dict(categoryorder='category descending'))
     fig.update_layout(
-    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     yaxis_title=f'<b style="font-size:1.4em">{ejey}</b>',
     #legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
@@ -164,6 +170,9 @@ def area(x,y, z=0):
 
     if y != 'repercusion':
         ejey = y 
+
+        metrica = 'nº de noticias'
+
         df = filtered_df.groupby([x, y]).size().reset_index(name='counts')
 
         df = df.sort_values(y)
@@ -177,6 +186,9 @@ def area(x,y, z=0):
 
     else:
         ejey = w 
+
+        metrica = z
+
         df = filtered_df.groupby([x, w]).sum().reset_index()
         df = df.sort_values(w)
 
@@ -195,7 +207,7 @@ def area(x,y, z=0):
         xsize = 25
 
     fig.update_layout(
-    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
     legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -218,6 +230,10 @@ def burbujas(x,y, z=0):
 
     if y != 'repercusion':
 
+        ejey = y
+
+        metrica = 'nº de noticias'
+
         data = filtered_df.groupby([x, y]).size().reset_index(name='counts')
         legend_order = sorted(list(data[y].unique()))
 
@@ -225,6 +241,11 @@ def burbujas(x,y, z=0):
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">{y}</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
 
     else:
+
+        ejey = w
+
+        metrica = z
+
         data = filtered_df.groupby([x, w]).sum().reset_index()
         legend_order = sorted(list(data[w].unique()))
 
@@ -233,7 +254,7 @@ def burbujas(x,y, z=0):
 
 
     fig.update_layout(
-    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -256,6 +277,11 @@ def barras_apiladas(x,y, z=0):
         xsize = 25
 
     if y != 'repercusion':
+
+        ejey = y
+
+        metrica = 'nº de noticias'
+
         df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
         legend_order = sorted(list(df_count[y].unique()))
 
@@ -264,6 +290,11 @@ def barras_apiladas(x,y, z=0):
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
 
     else:
+
+        ejey = w
+
+        metrica = z
+
         df_count = filtered_df.groupby([x, w]).sum().reset_index()
         legend_order = sorted(list(df_count[w].unique()))
 
@@ -274,7 +305,7 @@ def barras_apiladas(x,y, z=0):
 
 
     fig.update_layout(
-    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -297,6 +328,11 @@ def barras_log(x,y,z=0):
         xsize = 25
 
     if y != 'repercusion':
+
+        ejey = y
+
+        metrica = 'nº de noticias'
+
         df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
         legend_order = sorted(list(df_count[y].unique()))
 
@@ -305,6 +341,11 @@ def barras_log(x,y,z=0):
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
 
     else:
+
+        ejey = w
+
+        metrica = z
+
         df_count = filtered_df.groupby([x, w]).sum().reset_index()
         legend_order = sorted(list(df_count[w].unique()))
 
@@ -315,7 +356,7 @@ def barras_log(x,y,z=0):
 
 
     fig.update_layout(
-    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    title={'text': f"Acumulado logarítmico de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -337,6 +378,10 @@ def barras_perc(x,y,z=0):
 
     if y != 'repercusion':
 
+        ejey = y
+
+        metrica = 'nº de noticias'
+
         df_pcts = filtered_df.groupby([x, y]).size().reset_index(name='count')
         df_pcts['pct'] = df_pcts.groupby(x)['count'].apply(lambda x: x / float(x.sum()) * 100)
         legend_order = sorted(list(df_pcts[y].unique()))
@@ -348,6 +393,11 @@ def barras_perc(x,y,z=0):
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
 
     else:
+
+        ejey = w
+
+        metrica = z
+
         df_pcts = filtered_df.groupby([x, w]).sum().reset_index()
         df_pcts['pct'] = df_pcts.groupby(x)[z].apply(lambda x: x / float(x.sum()) * 100)
         legend_order = sorted(list(df_pcts[w].unique()))
@@ -360,7 +410,7 @@ def barras_perc(x,y,z=0):
 
 
     fig.update_layout(
-    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    title={'text': f"Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -375,11 +425,20 @@ def treemap(x,y,z=0):
 
     if y != 'repercusion':
 
+        ejey = y
+
+        metrica = 'nº de noticias'
+
         df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
 
         fig = px.treemap(df_count, path=[px.Constant('TODOS'), x, y], values='count',height=600)
 
     else:
+
+        ejey = w
+
+        metrica = z
+
         df_count = filtered_df.groupby([x, w]).sum().reset_index()
 
         fig = px.treemap(df_count, path=[px.Constant('TODOS'), x, w], values=z,height=600)
@@ -387,7 +446,7 @@ def treemap(x,y,z=0):
     fig.update_traces(root_color="lightgrey")
 
     fig.update_layout(
-        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+        title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
         xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
@@ -403,17 +462,26 @@ def sol(x,y,z=0):
 
     if y != 'repercusion':
 
+        ejey = y
+
+        metrica = 'nº de noticias'
+
         df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
 
         fig = px.sunburst(df_count, path=[x, y], values='count',height=800, width=800)
     
     else:
+
+        ejey = w
+
+        metrica = z
+
         df_count = filtered_df.groupby([x, w]).sum().reset_index()
 
         fig = px.sunburst(df_count, path=[x, w], values=z,height=800, width=800)
 
     fig.update_layout(
-        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+        title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
         xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
