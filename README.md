@@ -21,7 +21,7 @@
 
 
 ## 2 - EXTRACCIÓN, TRANSFORMACIÓN Y CARGA ⚙️ <a name="ETL"/>
-### Obtenemos datos de diferentes fuentes (7) utilizando 2 métodos de extracción.
+### Obtenemos datos de diferentes fuentes (8) utilizando 3 métodos de extracción.
 📰 Scrappeo Diarios: Extraemos la información de todas las noticias publicadas en las primeras planas digitales de los 6 principales diarios deportivos de España:<br />
 
 &emsp; &emsp; • Diarios:<br /> 
