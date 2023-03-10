@@ -53,5 +53,6 @@
 &emsp; &emsp; &emsp; ▶️ Utilizamos streamlit.app para subir la aplicación a la nube y hacerla accesible a cualquier usuario.
 
 ## 4 - LINK 🌐 <a name="LK"/>
-### Prueba, filtra, visualiza, analiza... ENJOY!<br /> 
-https://adrianciges-analisis-diarios-deportivos-mainmain-fu1n18.streamlit.app/#visibilidad-deportiva
+### Prueba, filtra, visualiza, analiza... ENJOY!<br />  
+👉🏻 https://adrianciges-analisis-diarios-deportivos-mainmain-fu1n18.streamlit.app/#visibilidad-deportiva<br />  
+&emsp; ![Nombre del gif](https://github.com/AdrianCiges/Analisis_Diarios_Deportivos/blob/main/img/cat_analysis.gif)
