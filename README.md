@@ -3,6 +3,7 @@
 [1 - Objetivo 🎯](#O)<br />
 [2 - Extracción, Transformación y Carga ⚙️](#ETL) <br />
 [3 - Streamlit 🌐](#ST)<br />
+[4 - Link 🌐](#LK)<br />
  
 ## 1 - OBJETIVO 🎯<a name="O"/>   
 💥  Analizar de la visibilidad otorgada por deporte, género del redactor, equipos de fútbol, etc. y su repercusión (en web + twitter) de las noticias de las primeras planas digitales de los principales diarios deportivos en España. El objetivo de este estudio es, a partir de los datos, poner de manifiesto si existen sesgos en las decisiones de los propios diarios deportivos a la hora de decidir a qué dar visibilidad en materia deportiva.<br />
@@ -50,3 +51,7 @@
 &emsp; &emsp; • Deploy: <br /> 
 &emsp; &emsp; &emsp; 💻 Creamos el presente repositorio en GitHub para poder ejecutar el código desde la nube. <br /> 
 &emsp; &emsp; &emsp; ▶️ Utilizamos streamlit.app para subir la aplicación a la nube y hacerla accesible a cualquier usuario.
+
+## 4 - LINK 🌐 <a name="LK"/>
+### Prueba, filtra, visualiza, analiza... ENJOY!<br /> 
+https://adrianciges-analisis-diarios-deportivos-mainmain-fu1n18.streamlit.app/#visibilidad-deportiva
