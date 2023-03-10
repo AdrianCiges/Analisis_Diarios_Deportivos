@@ -48,5 +48,5 @@
 &emsp; &emsp; • Estructura: Creamos el código python para levantar la interfaz a través de la librería streamlit. <br /> 
 &emsp; &emsp; • Test: Probamos las diferentes funcionalidades deseadas a través de la ejecución del código en local. <br /> 
 &emsp; &emsp; • Deploy: <br /> 
-&emsp; &emsp;&emsp; &emsp; - Creamos el presente repositorio en GitHub para poder ejecutar el código desde la nube. <br /> 
-&emsp; &emsp;&emsp; &emsp; - Utilizamos streamlit.app para subir la aplicación a la nube y hacerla accesible a cualquier usuario.
+&emsp; &emsp; &emsp; 💻 Creamos el presente repositorio en GitHub para poder ejecutar el código desde la nube. <br /> 
+&emsp; &emsp; &emsp; ▶️ Utilizamos streamlit.app para subir la aplicación a la nube y hacerla accesible a cualquier usuario.
