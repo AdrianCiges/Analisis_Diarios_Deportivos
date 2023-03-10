@@ -18,6 +18,11 @@ df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizac
 df['exito_tweet'] = df['exito_tweet'].replace(np.nan, 0)
 df['repercusion_twitter'] = df['repercusion_twitter'].replace(np.nan, 0)
 
+image_inicio = Image.open("./img/notme2.png")
+with io.BytesIO() as output:
+    image_inicio.save(output, format="PNG")
+    b64_1 = base64.b64encode(output.getvalue()).decode()
+
 
 
 def filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito):
@@ -34,45 +39,6 @@ def filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op
                      (df['repercusion_twitter'].between(op_repercusion[0], op_repercusion[1])) &
                      (df['exito_tweet'].between(op_exito[0], op_exito[1]))]
     return filtered_df
-
-def reset_filtros():
-    # Reinicia los valores de los filtros
-    op_web = []
-    op_seccion = []
-    op_equipo = []
-    op_genero = []
-
-    min_value = int(df['comentarios'].min())
-    max_value = int(df['comentarios'].max())
-    op_comentarios = [min_value, max_value]
-
-    min_value = int(df['tweets'].min())
-    max_value = int(df['tweets'].max())
-    op_tweets = [min_value, max_value]
-
-    min_value = int(df['alcance_twitter'].min())
-    max_value = int(df['alcance_twitter'].max())
-    op_alcance = [min_value, max_value]
-
-    min_value = int(df['likes_twitter'].min())
-    max_value = int(df['likes_twitter'].max())
-    op_likes = [min_value, max_value]
-
-    min_value = int(df['retweets'].min())
-    max_value = int(df['retweets'].max())
-    op_retweets = [min_value, max_value]
-
-    min_value = int(df['respuestas_twitter'].min())
-    max_value = int(df['respuestas_twitter'].max())
-    op_respuestas = [min_value, max_value]
-
-    min_value = int(df['repercusion_twitter'].min())
-    max_value = int(df['repercusion_twitter'].max())
-    op_repercusion = [min_value, max_value]
-
-    min_value = int(df['exito_tweet'].min())
-    max_value = int(df['exito_tweet'].max())+1
-    op_exito = [min_value, max_value]
 
 
 with st.sidebar.container():
@@ -122,12 +88,7 @@ with st.sidebar.container():
             max_value = int(df['exito_tweet'].max())+1
             op_exito = st.slider('**ÉXITO TW**', value = [min_value, max_value])
 
-        col1, col2 = st.columns(2)
-
-        with col1:
-        	submitted = st.form_submit_button("Filtrar Datos")
-        with col2:
-            reiniciar = st.form_submit_button("Reiniciar Filtros")
+        submitted = st.form_submit_button("Filtrar Datos")
 
 
         if submitted:
@@ -137,17 +98,8 @@ with st.sidebar.container():
             filtered_df = df.copy()
 
 
-        if reiniciar:
-
-            # Reinicia el DataFrame filtrado
-            reset_filtros()
-
-
 try:
-    if reiniciar:
-        filtered_df = df.copy()
-    else:
-        filtered_df = filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito)
+    filtered_df = filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito)
 
 except:
     filtered_df = df.copy()
@@ -155,8 +107,324 @@ except:
 with st.sidebar:
     st.write("Noticias totales:", filtered_df.shape[0]) 
 
-	
-app_mode = st.sidebar.selectbox('Ir a:',['🏠 Inicio', '💻 Web','🏊🏻 Deporte','⚽ Equipo','🚻 Género redactor/a'])
+
+def heatmap(x,y,z=0):   
+
+
+    if y != 'repercusion':
+        ejey = y 
+        data = filtered_df.groupby([x, y]).size().reset_index(name='counts')
+        z = data['counts']
+        y = data[y]
+        
+
+    else:
+        ejey = w 
+        data = filtered_df.groupby([x, w]).sum().reset_index()
+        z = data[z]
+        y = data[w]
+
+    x1 = x
+
+    fig = go.Figure(data=go.Heatmap(
+               z=z,
+               x=data[x],
+               y=y,
+               colorscale='Oranges'
+               ))
+
+    if x == 'seccion' or x == 'deporte' or x == 'equipo':
+        angle = 25
+        xsize = 16
+    else:
+        angle = 0
+        xsize = 25
+
+    
+    fig.update_layout(height=500, yaxis=dict(categoryorder='category descending'))
+    fig.update_layout(
+    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+    yaxis_title=f'<b style="font-size:1.4em">{ejey}</b>',
+    #legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
+    xaxis_tickfont=dict(size=xsize),
+    yaxis_tickfont=dict(size=12),
+    xaxis=dict(tickangle=angle),
+    legend_font=dict(size=20),
+    height=800 ,
+    yaxis=dict(tickangle=-30),
+    )         
+
+    return fig
+
+
+
+
+def area(x,y, z=0):   
+
+    if y != 'repercusion':
+        ejey = y 
+        df = filtered_df.groupby([x, y]).size().reset_index(name='counts')
+
+        df = df.sort_values(y)
+
+        fig = px.area(df, x=x, y='counts', color=y, title='Gráfico de áreas apiladas',
+                      labels={x:'Sitios web', 'counts':'Cantidad de registros'})
+
+        fig.update_layout(legend=dict(title=y, orientation='v', yanchor='top', y=1.0, xanchor='right', x=1.0),
+                          legend_traceorder='normal', yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',xaxis_title=f'<b style="font-size:1.2em">{x}</b>')
+        fig.update_xaxes(categoryorder='category ascending')
+
+    else:
+        ejey = w 
+        df = filtered_df.groupby([x, w]).sum().reset_index()
+        df = df.sort_values(w)
+
+        fig = px.area(df, x=x, y=z, color=w, title='Gráfico de áreas apiladas',
+                      labels={x:'Sitios web', z:'Cantidad de registros'})
+
+        fig.update_layout(legend=dict(title=y, orientation='v', yanchor='top', y=1.0, xanchor='right', x=1.0),
+                          legend_traceorder='normal', yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>', xaxis_title=f'<b style="font-size:1.2em">{x}</b>')
+        fig.update_xaxes(categoryorder='category ascending')
+
+    if x == 'seccion' or x == 'deporte' or x == 'equipo':
+        angle = 25
+        xsize = 16
+    else:
+        angle = 0
+        xsize = 25
+
+    fig.update_layout(
+    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
+    xaxis_tickfont=dict(size=xsize),
+    yaxis_tickfont=dict(size=12),
+    xaxis=dict(tickangle=angle),
+    legend_font=dict(size=20),
+    height=800  
+    )        
+    return fig
+
+
+def burbujas(x,y, z=0):   
+
+    if x == 'seccion' or x == 'deporte' or x == 'equipo':
+        angle = 25
+        xsize = 16
+
+    else:
+        angle = 0
+        xsize = 25
+
+    if y != 'repercusion':
+
+        data = filtered_df.groupby([x, y]).size().reset_index(name='counts')
+        legend_order = sorted(list(data[y].unique()))
+
+        fig = px.scatter(data, x=x, y=y, size='counts', color=y, category_orders={x: list(data[x].unique()), y: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">{y}</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
+
+    else:
+        data = filtered_df.groupby([x, w]).sum().reset_index()
+        legend_order = sorted(list(data[w].unique()))
+
+        fig = px.scatter(data, x=x, y=w, size=z, color=w, category_orders={x: list(data[x].unique()), w: legend_order}, color_continuous_scale=px.colors.sequential.Viridis)
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">{w}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
+
+
+    fig.update_layout(
+    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+    xaxis_tickfont=dict(size=xsize),
+    yaxis_tickfont=dict(size=12),
+    yaxis=dict(tickangle=-30),
+    xaxis=dict(tickangle=angle, categoryorder='category ascending'),
+    legend_font=dict(size=20),
+    legend_traceorder='normal',
+    height=800 
+    )            
+    return fig
+
+
+def barras_apiladas(x,y, z=0):   
+
+    if x == 'seccion' or x == 'deporte' or x == 'equipo':
+        angle = 25
+        xsize = 16
+    else:
+        angle = 0
+        xsize = 25
+
+    if y != 'repercusion':
+        df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
+        legend_order = sorted(list(df_count[y].unique()))
+
+        fig = px.bar(df_count, x=x, y='count', color=y,
+             log_y=False, category_orders={x: list(df_count[x].unique()), y: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
+
+    else:
+        df_count = filtered_df.groupby([x, w]).sum().reset_index()
+        legend_order = sorted(list(df_count[w].unique()))
+
+        fig = px.bar(df_count, x=x, y=z, color=w,
+             log_y=False, category_orders={x: list(df_count[x].unique()), w: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
+
+
+
+    fig.update_layout(
+    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+    xaxis_tickfont=dict(size=xsize),
+    yaxis_tickfont=dict(size=12),
+    xaxis=dict(tickangle=angle, categoryorder='category ascending'),
+    legend_font=dict(size=20),
+    legend_traceorder='normal',
+    height=600 
+    )            
+    return fig
+
+
+
+def barras_log(x,y,z=0):   
+
+    if x == 'seccion' or x == 'deporte' or x == 'equipo':
+        angle = 25
+        xsize = 16
+    else:
+        angle = 0
+        xsize = 25
+
+    if y != 'repercusion':
+        df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
+        legend_order = sorted(list(df_count[y].unique()))
+
+        fig = px.bar(df_count, x=x, y='count', color=y,
+             log_y=True, category_orders={x: list(df_count[x].unique()), y: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
+
+    else:
+        df_count = filtered_df.groupby([x, w]).sum().reset_index()
+        legend_order = sorted(list(df_count[w].unique()))
+
+        fig = px.bar(df_count, x=x, y=z, color=w,
+             log_y=True, category_orders={x: list(df_count[x].unique()), w: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
+
+
+
+    fig.update_layout(
+    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+    xaxis_tickfont=dict(size=xsize),
+    yaxis_tickfont=dict(size=12),
+    xaxis=dict(tickangle=angle, categoryorder='category ascending'),
+    legend_font=dict(size=20),
+    legend_traceorder='normal',
+    height=600 
+    )            
+    return fig
+
+def barras_perc(x,y,z=0):   
+
+    if x == 'seccion' or x == 'deporte' or x == 'equipo':
+        angle = 25
+        xsize = 16
+    else:
+        angle = 0
+        xsize = 25
+
+    if y != 'repercusion':
+
+        df_pcts = filtered_df.groupby([x, y]).size().reset_index(name='count')
+        df_pcts['pct'] = df_pcts.groupby(x)['count'].apply(lambda x: x / float(x.sum()) * 100)
+        legend_order = sorted(list(df_pcts[y].unique()))
+
+
+        fig = px.bar(df_pcts, x=x, y='pct', color=y,
+             barmode='stack', category_orders={x: list(df_pcts[x].unique()), y: legend_order})
+
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
+
+    else:
+        df_pcts = filtered_df.groupby([x, w]).sum().reset_index()
+        df_pcts['pct'] = df_pcts.groupby(x)[z].apply(lambda x: x / float(x.sum()) * 100)
+        legend_order = sorted(list(df_pcts[w].unique()))
+
+
+        fig = px.bar(df_pcts, x=x, y='pct', color=w,
+             barmode='stack', category_orders={x: list(df_pcts[x].unique()), w: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
+
+
+
+    fig.update_layout(
+    title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+    xaxis_tickfont=dict(size=xsize),
+    yaxis_tickfont=dict(size=12),
+    xaxis=dict(tickangle=angle, categoryorder='category ascending'),
+    legend_font=dict(size=20),
+    legend_traceorder='normal',
+    height=600 
+    )            
+    return fig
+
+def treemap(x,y,z=0):   
+
+    if y != 'repercusion':
+
+        df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
+
+        fig = px.treemap(df_count, path=[px.Constant('TODOS'), x, y], values='count',height=600)
+
+    else:
+        df_count = filtered_df.groupby([x, w]).sum().reset_index()
+
+        fig = px.treemap(df_count, path=[px.Constant('TODOS'), x, w], values=z,height=600)
+
+    fig.update_traces(root_color="lightgrey")
+
+    fig.update_layout(
+        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+        yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
+        legend_title=f'<b style="font-size:1.6em">{y}</b>',
+        xaxis_tickfont=dict(size=25),
+        yaxis_tickfont=dict(size=12),
+        legend_font=dict(size=20),
+        margin = dict(t=50, l=25, r=25, b=25),
+        height=600  
+    )
+    return fig
+
+def sol(x,y,z=0):   
+
+    if y != 'repercusion':
+
+        df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
+
+        fig = px.sunburst(df_count, path=[x, y], values='count',height=800, width=800)
+    
+    else:
+        df_count = filtered_df.groupby([x, w]).sum().reset_index()
+
+        fig = px.sunburst(df_count, path=[x, w], values=z,height=800, width=800)
+
+    fig.update_layout(
+        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
+        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+        yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
+        legend_title=f'<b style="font-size:1.6em">{y}</b>',
+        xaxis_tickfont=dict(size=25),
+        yaxis_tickfont=dict(size=12),
+        legend_font=dict(size=20),
+        margin = dict(t=50, l=25, r=25, b=25)
+    )
+    return fig
+
+app_mode = st.sidebar.selectbox('Visibilidad por (_elegir **eje X**_):',['🏠 Inicio', '💻 Web','🏊🏻 Deporte','⚽ Equipo','🚻 Género redactor/a'])
 
 if app_mode == '🏠 Inicio':
 
@@ -210,280 +478,558 @@ if app_mode == '🏠 Inicio':
 elif app_mode == '💻 Web':
 
     x = 'web'
-    y = st.sidebar.selectbox('Visibilidad según:', ['seccion', 'equipo', 'genero_redactor','repercusion'])
+    y = st.sidebar.selectbox('Desagrupar por (**Dimensión**):', ['seccion', 'equipo', 'genero_redactor','repercusion'])
 
     st.title('💻 Visibilidad por WEB')
+
+    st.markdown('##### Datos 🎯')
 
     with st.expander('_Ver datos_'): 
         filtered_df       
 
     if y != 'repercusion':
 
-        st.markdown('######')
+        try:
 
-        data = filtered_df.copy()
-        data = pd.crosstab(data[x], data[y])
-        data = data.reset_index()
+            if filtered_df.shape[0] != 0:
 
-        fig = plt.figure(figsize=(200, 80))
-        fig = px.bar(data, x=x, y=data.columns)
+                st.markdown('######')
 
-        fig.update_layout(
-        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
-        legend_title=f'<b style="font-size:1.6em">{y}</b>',
-        xaxis_tickfont=dict(size=25),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        )
+                st.markdown('##### Gráficos 📈')
 
-        st.plotly_chart(fig, use_container_width=True)
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (seccion, equipo...). En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a la dimensión elegida para la web que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y), use_container_width=True)   
+
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el **nº de noticias** correspondientes a cada web. Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por ese valor a cada web. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (seccion, equipo...). En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a la dimensión elegida para la web que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia al valor concreto de la dimensión (indicado en la leyenda)_') 
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada web. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada web. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el **porcentaje de noticias** de cada subgrupo respecto al total para cada web. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada una de las **webs** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del **nº de noticias** de esa web frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de esa web. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada una de las **webs** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de esa web frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de esa web. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y), use_container_width=True)  
+
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
+
         
     else:
-        w = st.sidebar.selectbox('Repercusión según:', ['seccion', 'equipo', 'genero_redactor'])
-        z = st.sidebar.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
-        
-        st.markdown('######')
-        
-        data = filtered_df.copy()
-        data = data.reset_index()
-        df_suma = data.groupby([x, w])[z].sum().reset_index()
 
-        fig = go.Figure()
+        col1, col2 = st.sidebar.columns((1,5))
 
-        for seccion in df_suma[w].unique():
-            df_seccion = df_suma[df_suma[w] == seccion]
-            fig.add_trace(go.Bar(
-                x=df_seccion['web'],
-                y=df_seccion[z],
-                name=seccion,
-                offsetgroup=seccion,
-                width=0.5
-            ))
-            
-        fig.update_layout(
-        title={'text': f"Repercusión de las noticias por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',
-        legend_title=f'<b style="font-size:1.6em">{w}</b>',
-        xaxis_tickfont=dict(size=25),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        barmode='stack'
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
 
+        with col2:
+            w = st.selectbox('Repercusión desagrupada por:', ['seccion', 'equipo', 'genero_redactor'])
+            z = st.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
+
+
+        try:
+
+            if filtered_df.shape[0] != 0:
+
+                st.markdown('######')
+
+                st.markdown('##### Gráficos 📈')
+
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representan los valores de la **dimensión** por la que hayas elegido desagrupar (seccion, equipo...). En cada **casilla** del heatmap se representa el sumatorio de la **métrica** que hayas elegido vizualizar (comentarios, retweets...) y correspondiente a la dimensión de desagrupación elegida para la web que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar. Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de la métrica escogida aportado a cada web. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (seccion, equipo...). En cada **burbuja** del gráfico se representa el sumatorio de la **métrica** que hayas decidido visualizar correspondientes a la dimensión elegida para la web que indique el eje X. A mayor **diámetro**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una burbuja verás el valor de la **métrica** correspondiente. El **color** de cada burbuja hace referencia al nombre concreto de la dimensión (indicado en la leyenda)._') 
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en términos absolutos) correspondientes a cada web. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en escala logarítmica) correspondientes a cada web. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **webs**. En el **eje Y** se representa el **porcentaje** que cada subgrupo aporta al total de la **métrica** escogida para cada web. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada una de las **webs** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del sumatorio de la **métrica** escogida frente al total para esa web. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en esa web. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y,z), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada una de las **webs** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** de la **métrica** escogida frenta al total para esa web. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en esa web. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y,z), use_container_width=True) 
+      
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
 
 
 elif app_mode == '🏊🏻 Deporte':
 
     x = 'seccion'
-    y = st.sidebar.selectbox('Visibilidad según:', ['web' ,'equipo', 'genero_redactor', 'repercusion'])
+    y = st.sidebar.selectbox('Desagrupar por (**Dimension**):', ['web' ,'equipo', 'genero_redactor', 'repercusion'])
 
     st.title('🏊🏻 Visibilidad por DEPORTE')
 
+    st.markdown('##### Datos 🎯')
+
     with st.expander('_Ver datos_'): 
-        filtered_df 
+        filtered_df       
 
     if y != 'repercusion':
 
-        st.markdown('######')
+        try:
 
-        data = filtered_df.copy()
-        data = pd.crosstab(data[x], data[y])
-        data = data.reset_index()
+            if filtered_df.shape[0] != 0:
 
-        fig = plt.figure(figsize=(200, 80))
-        fig = px.bar(data, x=x, y=data.columns)
+                st.markdown('######')
 
-        fig.update_layout(
-        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
-        legend_title=f'<b style="font-size:1.6em">{y}</b>',
-        xaxis_tickfont=dict(size=18),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        xaxis=dict(tickangle=30)
-        )
+                st.markdown('##### Gráficos 📈')
 
-        st.plotly_chart(fig, use_container_width=True)
-        
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, equipo...). En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a la dimensión elegida para la sección (deporte) que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y), use_container_width=True)   
+
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el **nº de noticias** correspondientes a cada sección (deporte). Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por ese valor a cada sección (deporte). Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, equipo...). En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a la dimensión elegida para la sección (deporte) que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia al valor concreto de la dimensión (indicado en la leyenda)._') 
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada sección (deporte). Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada sección (deporte). Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el **porcentaje de noticias** de cada subgrupo respecto al total para cada sección (deporte). Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada una de las **secciones** (deportes) diferenciadas por colores. El **tamaño** de cada una representa la **proporción** del **nº de noticias** de esa sección (deporte) frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de esa sección (deporte). Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de los **sectores** del círculo interno hace referencia a cada una de las **secciones** (deportes) diferenciadas por colores. El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de esa sección (deporte) frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de esa sección (deporte). Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y), use_container_width=True)   
+
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
+
     else:
-        w = st.sidebar.selectbox('Repercusión según:', ['web', 'equipo', 'genero_redactor'])
-        z = st.sidebar.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
-        
-        st.markdown('######')
-        
-        data = filtered_df.copy()
-        data = data.reset_index()
-        df_suma = data.groupby([x, w])[z].sum().reset_index()
 
-        fig = go.Figure()
+        col1, col2 = st.sidebar.columns((1,5))
 
-        for seccion in df_suma[w].unique():
-            df_seccion = df_suma[df_suma[w] == seccion]
-            fig.add_trace(go.Bar(
-                x=df_seccion['seccion'],
-                y=df_seccion[z],
-                name=seccion,
-                offsetgroup=seccion,
-                width=0.5
-            ))
-            
-        fig.update_layout(
-        title={'text': f"Repercusión de las noticias por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',
-        legend_title=f'<b style="font-size:1.6em">{w}</b>',
-        xaxis_tickfont=dict(size=18),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        barmode='stack',
-        xaxis=dict(tickangle=30)
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
 
+        with col2:
+            w = st.selectbox('Repercusión desagrupada por:', ['web', 'equipo', 'genero_redactor'])
+            z = st.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
+
+        try:
+
+            if filtered_df.shape[0] != 0:
+
+                st.markdown('######')
+
+                st.markdown('##### Gráficos 📈')
+
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representan los valores de la **dimensión** por la que hayas elegido desagrupar (web, equipo...). En cada **casilla** del heatmap se representa el sumatorio de la **métrica** que hayas elegido vizualizar (comentarios, retweets...) y correspondiente a la dimensión de desagrupación elegida para la sección (deporte) que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar. Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de la métrica escogida aportado a cada sección (deporte). Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, equipo...). En cada **burbuja** del gráfico se representa el sumatorio de la **métrica** que hayas decidido visualizar correspondientes a la dimensión elegida para la sección (deporte) que indique el eje X. A mayor **diámetro**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una burbuja verás el valor de la **métrica** correspondiente. El **color** de cada burbuja hace referencia al nombre concreto de la dimensión (indicado en la leyenda)._') 
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en términos absolutos) correspondientes a cada sección (deporte). Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en escala logarítmica) correspondientes a cada sección (deporte). Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **secciones** (deportes). En el **eje Y** se representa el **porcentaje** que cada subgrupo aporta al total de la **métrica** escogida para cada sección (deporte). Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada una de las **secciones** (deportes) diferenciadas por colores. El **tamaño** de cada una representa la **proporción** del sumatorio de la **métrica** escogida frente al total para esa sección (deporte). Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en esa sección (deporte). Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y,z), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada una de las **secciones** (deportes) diferenciadas por colores. El **tamaño** de cada uno representa la **proporción** de la **métrica** escogida frenta al total para esa sección (deporte). Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en esa sección (deporte). Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y,z), use_container_width=True) 
+
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
 
 
 elif app_mode == '⚽ Equipo':
     
     x = 'equipo'
-    y = st.sidebar.selectbox('Visibilidad según:',['web','seccion','genero_redactor','repercusion'])
+    y = st.sidebar.selectbox('Desagrupar por (**Domensión**):',['web','seccion','genero_redactor','repercusion'])
 
     st.title('⚽ Visibilidad por EQUIPO')
 
+    st.markdown('##### Datos 🎯')
+
     with st.expander('_Ver datos_'): 
-        filtered_df 
+        filtered_df       
 
     if y != 'repercusion':
 
-        st.markdown('######')
+        try:
 
-        data = filtered_df.copy()
-        data = pd.crosstab(data[x], data[y])
-        data = data.reset_index()
+            if filtered_df.shape[0] != 0:
 
-        fig = plt.figure(figsize=(200, 80))
-        fig = px.bar(data, x=x, y=data.columns)
+                st.markdown('######')
 
-        fig.update_layout(
-        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
-        legend_title=f'<b style="font-size:1.6em">{y}</b>',
-        xaxis_tickfont=dict(size=15),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        xaxis=dict(tickangle=45)
-        )
+                st.markdown('##### Gráficos 📈')
 
-        st.plotly_chart(fig, use_container_width=True)
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a la dimensión elegida para el equipo que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y), use_container_width=True)   
+
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el **nº de noticias** correspondientes a cada equipo. Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por ese valor a cada equipo. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a la dimensión elegida para el equipo que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia al valor concreto de la dimensión (indicado en la leyenda)._') 
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada equipo. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada equipo. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el **porcentaje de noticias** de cada subgrupo respecto al total para cada equipo. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada uno de los **equipos** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del **nº de noticias** de ese equipo frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de ese equipo. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada una de los **equipos** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de ese equipo frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de ese equipo. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y), use_container_width=True)   
+
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)      
         
     else:
-        w = st.sidebar.selectbox('Repercusión según:', ['web', 'seccion','genero_redactor'])
-        z = st.sidebar.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
-        
-        st.markdown('######')
-        
-        data = filtered_df.copy()
-        data = data.reset_index()
-        df_suma = data.groupby([x, w])[z].sum().reset_index()
 
-        fig = go.Figure()
+        col1, col2 = st.sidebar.columns((1,5))
 
-        for seccion in df_suma[w].unique():
-            df_seccion = df_suma[df_suma[w] == seccion]
-            fig.add_trace(go.Bar(
-                x=df_seccion['equipo'],
-                y=df_seccion[z],
-                name=seccion,
-                offsetgroup=seccion,
-                width=0.5
-            ))
-            
-        fig.update_layout(
-        title={'text': f"Repercusión de las noticias por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',
-        legend_title=f'<b style="font-size:1.6em">{w}</b>',
-        xaxis_tickfont=dict(size=15),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        barmode='stack',
-        xaxis=dict(tickangle=45)
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
 
+        with col2:
+            w = st.selectbox('Repercusión desagrupada por:', ['web', 'seccion','genero_redactor'])
+            z = st.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
+
+        try:
+
+            if filtered_df.shape[0] != 0:
+
+                st.markdown('######')
+
+                st.markdown('##### Gráficos 📈')
+
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representan los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **casilla** del heatmap se representa el sumatorio de la **métrica** que hayas elegido vizualizar (comentarios, retweets...) y correspondiente a la dimensión de desagrupación elegida para el equipo que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar. Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de la métrica escogida aportado a cada equipo. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **burbuja** del gráfico se representa el sumatorio de la **métrica** que hayas decidido visualizar correspondientes a la dimensión elegida para el equipo que indique el eje X. A mayor **diámetro**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una burbuja verás el valor de la **métrica** correspondiente. El **color** de cada burbuja hace referencia al nombre concreto de la dimensión (indicado en la leyenda)._') 
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en términos absolutos) correspondientes a cada equipo. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en escala logarítmica) correspondientes a cada equipo. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **equipos**. En el **eje Y** se representa el **porcentaje** que cada subgrupo aporta al total de la **métrica** escogida para cada equipo. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada uno de los **equipos** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del sumatorio de la **métrica** escogida frente al total para ese equipo. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en ese equipo. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y,z), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada uno de los **equipos** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** de la **métrica** escogida frenta al total para ese equipo. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en ese equipo. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y,z), use_container_width=True)
+
+
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
 
 elif app_mode == '🚻 Género redactor/a':
 	
     x = 'genero_redactor'
-    y = st.sidebar.selectbox('Visibilidad según:',['web','seccion', 'equipo', 'repercusion'])
+    y = st.sidebar.selectbox('Desagrupar por (**Dimensión**):',['web','seccion', 'equipo', 'repercusion'])
 
     st.title('🚻 Visibilidad por GÉNERO_REDACTOR/A')
 
+    st.markdown('##### Datos 🎯')
+
     with st.expander('_Ver datos_'): 
-        filtered_df 
+        filtered_df       
 
     if y != 'repercusion':
 
-        st.markdown('######')
+        try:
 
-        data = filtered_df.copy()
-        data = pd.crosstab(data[x], data[y])
-        data = data.reset_index()
+            if filtered_df.shape[0] != 0:
 
-        fig = plt.figure(figsize=(200, 80))
-        fig = px.bar(data, x=x, y=data.columns)
+                st.markdown('######')
 
-        fig.update_layout(
-        title={'text': f"Noticias en primera plana por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
-        legend_title=f'<b style="font-size:1.6em">{y}</b>',
-        xaxis_tickfont=dict(size=25),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        )
+                st.markdown('##### Gráficos 📈')
 
-        st.plotly_chart(fig, use_container_width=True)
-        x
-    else:
-        w = st.sidebar.selectbox('Repercusión según:', ['web', 'seccion','equipo'])
-        z = st.sidebar.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **género del redactor**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a la dimensión elegida para el género que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y), use_container_width=True)   
+
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **género del redactor**. En el **eje Y** se representa el **nº de noticias** correspondientes a cada género. Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por ese valor a cada género. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **género del redactor**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a la dimensión elegida para el género que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia al valor concreto de la dimensión (indicado en la leyenda)._') 
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **género del redactor**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada género. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **género del redactor**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada género. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **género del redactor**. En el **eje Y** se representa el **porcentaje de noticias** de cada subgrupo respecto al total para cada género. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada uno de los **géneros de los redactores** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del **nº de noticias** de ese género frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de ese género. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada una de los **géneros de los redactores** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de ese género frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada sub-grupo frente al total de noticias de ese género. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y), use_container_width=True) 
+
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True) 
         
-        st.markdown('######')
-        
-        data = filtered_df.copy()
-        data = data.reset_index()
-        df_suma = data.groupby([x, w])[z].sum().reset_index()
-
-        fig = go.Figure()
-
-        for seccion in df_suma[w].unique():
-            df_seccion = df_suma[df_suma[w] == seccion]
-            fig.add_trace(go.Bar(
-                x=df_seccion['genero_redactor'],
-                y=df_seccion[z],
-                name=seccion,
-                offsetgroup=seccion,
-                width=0.5
-            ))
             
-        fig.update_layout(
-        title={'text': f"Repercusión de las noticias por {app_mode.upper()}",'font_size': 24},
-        xaxis_title=f'<b style="font-size:1.6em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',
-        legend_title=f'<b style="font-size:1.6em">{w}</b>',
-        xaxis_tickfont=dict(size=25),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        barmode='stack'
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
+    else:
+
+        col1, col2 = st.sidebar.columns((1,5))
+
+
+        with col2:
+            w = st.selectbox('Repercusión desagrupada por:', ['web', 'seccion','equipo'])
+            z = st.selectbox('Métrica:', ['comentarios', 'tweets', 'alcance_twitter', 'likes_twitter', 'retweets', 'respuestas_twitter', 'repercusion_twitter', 'exito_tweet'])
+
+        try:
+
+            if filtered_df.shape[0] != 0:
+
+                st.markdown('######')
+
+                st.markdown('##### Gráficos 📈')
+
+                with st.expander('Heatmap', expanded=True): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **géneros de los redactores**. En el **eje Y** se representan los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **casilla** del heatmap se representa el sumatorio de la **métrica** que hayas elegido vizualizar (comentarios, retweets...) y correspondiente a la dimensión de desagrupación elegida para el género que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** correspondiente._') 
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **géneros de los redactores**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar. Cada una de las **líneas** representa cada uno de los valores de la **dimensión** por la que hayas elegido desagrupar (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de la métrica escogida aportado a cada género. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada dimensión al sumatorio total está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
+                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+
+                with st.expander('Burbujas', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **géneros de los redactores**. En el **eje Y** encontramos los valores de la **dimensión** por la que hayas elegido desagrupar (web, seccion...). En cada **burbuja** del gráfico se representa el sumatorio de la **métrica** que hayas decidido visualizar correspondientes a la dimensión elegida para el género que indique el eje X. A mayor **diámetro**, mayor sumatorio de la métrica elegida (y viceversa). Colocándote encima de una burbuja verás el valor de la **métrica** correspondiente. El **color** de cada burbuja hace referencia al nombre concreto de la dimensión (indicado en la leyenda)._') 
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **géneros de los redactores**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en términos absolutos) correspondientes a cada género. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo._') 
+                    st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **géneros de los redactores**. En el **eje Y** se representa el sumatorio de la **métrica** que hayas elegido vizualizar (en escala logarítmica) correspondientes a cada género. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                    st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos los **géneros de los redactores**. En el **eje Y** se representa el **porcentaje** que cada subgrupo aporta al total de la **métrica** escogida para cada género. Cada uno de los **colores** de las barras hace referencia a cada uno de los valores de la dimensión por la que hayas decidido desagrupar (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada subgrupo, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada uno de los **géneros de los redactores** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del sumatorio de la **métrica** escogida frente al total para ese género. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-caja representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en ese género. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    st.plotly_chart(treemap(x,y,z), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=False): 
+                    st.write('_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada uno de los **géneros de los redactores** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** de la **métrica** escogida frenta al total para ese género. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada uno de los valores de la **dimensión** por la que hayas decidido desagrupar. El **tamaño** de cada sub-sector representa la **proporción** de la **métrica** escogida frente al total para cada sub-grupo en ese género. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
+                    st.plotly_chart(sol(x,y,z), use_container_width=True)
+
+            else:
+                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+                col1, col2, col3 = st.columns((1,3,1))
+
+                with col2:
+                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+                 
+        except:
+
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+            col1, col2, col3 = st.columns((1,3,1))
+
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
+
