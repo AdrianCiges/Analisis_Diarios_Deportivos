@@ -41,6 +41,8 @@ def filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op
                      (df['exito_tweet'].between(op_exito[0], op_exito[1]))]
     return filtered_df
 
+movil = st.sidebar.checkbox("Accedo desde un móvil")
+st.sidebar.write('\n')
 
 with st.sidebar.container():
 
@@ -108,6 +110,8 @@ except:
 with st.sidebar:
     st.write("Noticias totales:", filtered_df.shape[0]) 
 
+st.sidebar.write('\n')
+
 
 def heatmap(x,y,z=0):   
 
@@ -147,6 +151,8 @@ def heatmap(x,y,z=0):
         angle = 0
         xsize = 25
 
+    if movil:
+        xsize = 8
     
     fig.update_layout(height=500, yaxis=dict(categoryorder='category descending'))
     fig.update_layout(
@@ -505,7 +511,7 @@ if app_mode == '🏠 Inicio':
 
     st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.')
 	
-    st.write('##### ⚠️ La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, podrás disfrutar igualmente del contenido rotando tu pantalla para una mejor adaptación de los gráficos que vas a visualizar.')
+    st.write('##### ⚠️ La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.')
    
     st.write('\n')
     st.write('#### 📋 Datos Totales:')
