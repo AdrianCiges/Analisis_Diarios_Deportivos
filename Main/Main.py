@@ -12,17 +12,7 @@ import base64
 import io
 from streamlit_ace import st_ace
 
-# Verificamos si el usuario accede desde un dispositivo móvil
-is_mobile = st.sidebar.checkbox("¿Accedes desde un móvil?")
-
-# Establecemos la configuración de la página
-if is_mobile:
-    st.set_page_config(
-        layout="wide",
-        initial_sidebar_state="collapsed",
-    )
-
-st.set_page_config(layout="wide", page_icon="🗞️", page_title="Visibilidad Deportiva")
+st.set_page_config(layout="wide",initial_sidebar_state="collapsed", page_icon="🗞️", page_title="Visibilidad Deportiva")
 
 df = pd.read_excel('./data/repercusion_noticias_deportivas.xlsx')
 df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizacion'], axis=1)
