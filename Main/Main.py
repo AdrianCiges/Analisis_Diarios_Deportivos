@@ -525,8 +525,14 @@ if app_mode == '🏠 Inicio':
 
     st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.')
 	
-    st.write('##### ⚠️ La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.')
-   
+    st.markdown(
+        """
+        <div style='border: 2px solid orange; border-radius: 5px; padding: 10px'>
+            <h5 style='margin-bottom: 0px'>⚠️ La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.</h5>
+        </div>
+        """,
+        unsafe_allow_html=True)
+
     st.write('\n')
     st.write('#### 📋 Datos Totales:')
     df
