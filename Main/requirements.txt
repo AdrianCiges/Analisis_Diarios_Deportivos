@@ -7,3 +7,4 @@ streamlit==1.19.0
 streamlit_extras==0.2.4
 openpyxl
 user-agents
+streamlit_ace
