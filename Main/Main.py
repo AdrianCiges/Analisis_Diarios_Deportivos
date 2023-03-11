@@ -1,17 +1,4 @@
 import streamlit as st
-
-# Verificamos si el usuario accede desde un dispositivo móvil
-is_mobile = st.sidebar.checkbox("¿Accedes desde un móvil?")
-
-# Establecemos la configuración de la página
-if is_mobile:
-    st.set_page_config(
-        page_title="Mi página en modo apaisado",
-        page_icon=":eyeglasses:",
-        layout="wide",
-        initial_sidebar_state="collapsed",
-    )
-
 import pandas as pd
 import numpy as np
 import pylab as plt
@@ -24,6 +11,16 @@ from streamlit.components.v1 import html
 import base64
 import io
 from streamlit_ace import st_ace
+
+# Verificamos si el usuario accede desde un dispositivo móvil
+is_mobile = st.sidebar.checkbox("¿Accedes desde un móvil?")
+
+# Establecemos la configuración de la página
+if is_mobile:
+    st.set_page_config(
+        layout="wide",
+        initial_sidebar_state="collapsed",
+    )
 
 st.set_page_config(layout="wide", page_icon="🗞️", page_title="Visibilidad Deportiva")
 
