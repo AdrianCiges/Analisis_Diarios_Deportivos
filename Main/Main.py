@@ -212,6 +212,9 @@ def area(x,y, z=0):
     else:
         angle = 0
         xsize = 25
+	
+    if movil:
+        xsize = 8
 
     fig.update_layout(
     title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
@@ -259,6 +262,8 @@ def burbujas(x,y, z=0):
         fig = px.scatter(data, x=x, y=w, size=z, color=w, category_orders={x: list(data[x].unique()), w: legend_order}, color_continuous_scale=px.colors.sequential.Viridis)
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">{w}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
 
+    if movil:
+        xsize = 8
 
     fig.update_layout(
     title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
@@ -309,7 +314,8 @@ def barras_apiladas(x,y, z=0):
              log_y=False, category_orders={x: list(df_count[x].unique()), w: legend_order})
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
 
-
+    if movil:
+        xsize = 8
 
     fig.update_layout(
     title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
@@ -360,7 +366,8 @@ def barras_log(x,y,z=0):
              log_y=True, category_orders={x: list(df_count[x].unique()), w: legend_order})
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">suma de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
 
-
+    if movil:
+        xsize = 8
 
     fig.update_layout(
     title={'text': f"Acumulado logarítmico de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
@@ -414,7 +421,8 @@ def barras_perc(x,y,z=0):
              barmode='stack', category_orders={x: list(df_pcts[x].unique()), w: legend_order})
         fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
 
-
+    if movil:
+        xsize = 8
 
     fig.update_layout(
     title={'text': f"Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
@@ -450,6 +458,9 @@ def treemap(x,y,z=0):
 
         fig = px.treemap(df_count, path=[px.Constant('TODOS'), x, w], values=z,height=600)
 
+    if movil:
+        xsize = 8
+	
     fig.update_traces(root_color="lightgrey")
 
     fig.update_layout(
@@ -487,6 +498,9 @@ def sol(x,y,z=0):
 
         fig = px.sunburst(df_count, path=[x, w], values=z,height=800, width=800)
 
+    if movil:
+        xsize = 8
+	
     fig.update_layout(
         title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
         xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
