@@ -10,8 +10,24 @@ import plotly.graph_objs as go
 from streamlit.components.v1 import html
 import base64
 import io
+import streamlit.devices as devices
 
 st.set_page_config(layout="wide", page_icon="🗞️", page_title="Visibilidad Deportiva")
+
+# Detectar si el usuario está accediendo desde un dispositivo móvil
+device_info = devices.get_info()
+is_mobile = device_info.type == devices.DeviceType.MOBILE
+
+# Configurar la página
+if is_mobile:
+    st.set_page_config(page_title="Mi Página", layout="wide", initial_sidebar_state="collapsed", orientation="landscape")
+else:
+    st.set_page_config(page_title="Mi Página", layout="wide", initial_sidebar_state="collapsed")
+    
+# Agregar contenido a la página
+st.title("Mi Página")
+st.write("¡Hola, mundo!")
+
 
 df = pd.read_excel('./data/repercusion_noticias_deportivas.xlsx')
 df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizacion'], axis=1)
