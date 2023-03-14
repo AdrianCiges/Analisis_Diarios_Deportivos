@@ -567,8 +567,8 @@ if app_mode == '🏠 Inicio':
     
     # texto = "🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar."
 
-    #st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.')
-    st.write("<span style='font-size: 19px; color: black;'>{}</span>".format(texto), unsafe_allow_html=True)
+    # st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.')
+    # st.write("<span style='font-size: 19px; color: black;'>{}</span>".format(texto), unsafe_allow_html=True)
 
     texto = """
     <div style='border: 1.5px solid orange; border-radius: 5px'>
