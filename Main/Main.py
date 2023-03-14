@@ -559,21 +559,17 @@ if app_mode == '🏠 Inicio':
     st.markdown('<h5 style="text-align:left;"><span style="font-size: 28px; font-weight:semibold;">📈 Visibilidad otorgada por deporte, género del redactor, equipos de fútbol, etc. y su repercusión (en web + twitter) de las noticias de las primeras planas digitales de los principales diarios deportivos en España.</span></h5>', unsafe_allow_html=True)
     st.markdown('<h5 style="text-align:left;"><span style="font-size: 22px; font-weight:normal;">El objetivo de este estudio es, a partir de los datos, poner de manifiesto si existen sesgos en las decisiones de los propios diarios deportivos a la hora de decidir a qué dar visibilidad en materia deportiva.</span></h5>', unsafe_allow_html=True)
 
-
     st.write('\n')
     
     st.markdown('<h5 style="text-align:center;"><span style="font-size: 22px; font-weight:semibold;">🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.</span></h5>', unsafe_allow_html=True)
 
-    
-    # texto = "🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar."
-
-    # st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.')
-    # st.write("<span style='font-size: 19px; color: black;'>{}</span>".format(texto), unsafe_allow_html=True)
+    st.write('\n')
+    st.markdown('<h5 style="text-align:center;"><span style="font-size: 22px; font-weight:semibold;">⚠️</span></h5>', unsafe_allow_html=True)
 
     texto = """
-    <div style='border: 1.5px solid orange; border-radius: 5px'>
-        <h6 style='margin: 10px 0px; color: green; font-family: Georgia, sans-serif; font-size: 16px; padding: 10px'>
-            ⚠️ La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.
+    <div style='border: 1px solid #FFA500; border-radius: 5px; background-color: #FFFFE0; padding: 10px'>
+        <h6 style='margin: 5px 1px 5px 1px; color: #FF8B00; font-family: Georgia, sans-serif; font-size: 16px'>
+            La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.
         </h6>
     </div>
     """
