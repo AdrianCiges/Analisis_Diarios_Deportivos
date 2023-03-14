@@ -552,17 +552,20 @@ app_mode = st.sidebar.selectbox('Visibilidad por (_elegir **eje X**_):',['🏠 I
 
 if app_mode == '🏠 Inicio':
 
-    # st.markdown('<h1 style="text-align: center;">👀 Visibilidad Deportiva</h1>', unsafe_allow_html=True)
-
     st.markdown('<h1 style="text-align:center"><span style="font-size: 40px;">🗞️</span> <u>ANÁLISIS DIARIOS DEPORTIVOS</u></h1>', unsafe_allow_html=True)
+    
     st.write('\n')
+    
+    st.markdown('<h5 style="text-align:left;"><span style="font-size: 24px; font-weight:semibold;">📈 Visibilidad otorgada por deporte, género del redactor, equipos de fútbol, etc. y su repercusión (en web + twitter) de las noticias de las primeras planas digitales de los principales diarios deportivos en España.</span></h5>', unsafe_allow_html=True)
+    st.markdown('<h5 style="text-align:left;"><span style="font-size: 18px; font-weight:regular;">El objetivo de este estudio es, a partir de los datos, poner de manifiesto si existen sesgos en las decisiones de los propios diarios deportivos a la hora de decidir a qué dar visibilidad en materia deportiva.</span></h5>', unsafe_allow_html=True)
 
-    st.write('#### 📈 Análisis de la visibilidad otorgada por deporte, género del redactor, equipos de fútbol, etc. y su repercusión (en web + twitter) de las noticias de las primeras planas digitales de los principales diarios deportivos en España.')
-    st.write('##### El objetivo de este estudio es, a partir de los datos, poner de manifiesto si existen sesgos en las decisiones de los propios diarios deportivos a la hora de decidir a qué dar visibilidad en materia deportiva.')
 
     st.write('\n')
     
-    texto = "🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar."
+    st.markdown('<h5 style="text-align:center;"><span style="font-size: 18px; font-weight:semibold;">🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.</span></h5>', unsafe_allow_html=True)
+
+    
+    # texto = "🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar."
 
     #st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.')
     st.write("<span style='font-size: 19px; color: black;'>{}</span>".format(texto), unsafe_allow_html=True)
