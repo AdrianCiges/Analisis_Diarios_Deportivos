@@ -193,7 +193,7 @@ def area(x,y, z=0):
 
         df = df.sort_values(y)
 
-        fig = px.area(df, x=x, y='counts', color=y, title='Gráfico de áreas apiladas',
+        fig = px.area(df, x=x, y='counts', color=y, title='',
                       labels={x:'Sitios web', 'counts':'Cantidad de registros'})
 
         fig.update_layout(legend=dict(title=y, orientation='v', yanchor='top', y=1.0, xanchor='right', x=1.0),
