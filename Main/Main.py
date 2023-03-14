@@ -174,6 +174,7 @@ def heatmap(x,y,z=0):
     legend_font=dict(size=20),
     height=800 ,
     yaxis=dict(tickangle=-30),
+    margin=dict(t=30)
     )         
 
     return fig
@@ -234,7 +235,8 @@ def area(x,y, z=0):
     yaxis_tickfont=dict(size=12),
     xaxis=dict(tickangle=angle),
     legend_font=dict(size=20),
-    height=800  
+    height=800,
+    margin=dict(t=30)
     )        
     return fig
 
@@ -288,7 +290,8 @@ def burbujas(x,y, z=0):
     xaxis=dict(tickangle=angle, categoryorder='category ascending'),
     legend_font=dict(size=20),
     legend_traceorder='normal',
-    height=800 
+    height=800,
+    margin=dict(t=30)
     )            
     return fig
 
@@ -342,7 +345,8 @@ def barras_apiladas(x,y, z=0):
     xaxis=dict(tickangle=angle, categoryorder='category ascending'),
     legend_font=dict(size=20),
     legend_traceorder='normal',
-    height=600 
+    height=600,
+    margin=dict(t=30)
     )            
     return fig
 
@@ -397,7 +401,8 @@ def barras_log(x,y,z=0):
     xaxis=dict(tickangle=angle, categoryorder='category ascending'),
     legend_font=dict(size=20),
     legend_traceorder='normal',
-    height=600 
+    height=600,
+    margin=dict(t=30)
     )            
     return fig
 
@@ -455,7 +460,8 @@ def barras_perc(x,y,z=0):
     xaxis=dict(tickangle=angle, categoryorder='category ascending'),
     legend_font=dict(size=20),
     legend_traceorder='normal',
-    height=600 
+    height=600,
+    margin=dict(t=30)
     )            
     return fig
 
@@ -497,7 +503,7 @@ def treemap(x,y,z=0):
         xaxis_tickfont=dict(size=25),
         yaxis_tickfont=dict(size=12),
         legend_font=dict(size=20),
-        margin = dict(t=50, l=25, r=25, b=25)
+        margin = dict(t=30, l=25, r=25, b=25)
     )
 
     return fig
@@ -538,7 +544,7 @@ def sol(x,y,z=0):
         xaxis_tickfont=dict(size=25),
         yaxis_tickfont=dict(size=12),
         legend_font=dict(size=20),
-        margin = dict(t=50, l=25, r=25, b=25)
+        margin = dict(t=30, l=25, r=25, b=25)
     )
     return fig
 
