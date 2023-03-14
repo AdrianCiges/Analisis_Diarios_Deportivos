@@ -565,16 +565,7 @@ if app_mode == '🏠 Inicio':
 
     st.write('\n')
     st.markdown('<h5 style="text-align:center;"><span style="font-size: 22px; font-weight:semibold;">⚠️</span></h5>', unsafe_allow_html=True)
-
-    texto = """
-    <div style='border: 1px solid #FFA500; border-radius: 5px; background-color: #FFFFE0; padding: 10px'>
-        <h6 style='margin: 5px 1px 0px 1px; color: #FF8B00; font-family: Georgia, sans-serif; font-size: 16px'>
-            La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.
-        </h6>
-    </div>
-    """
-
-    st.markdown(texto, unsafe_allow_html=True)
+    st.warning('La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.')
 
     st.write('\n')
     st.write('\n')
