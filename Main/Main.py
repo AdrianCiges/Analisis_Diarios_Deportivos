@@ -159,9 +159,12 @@ def heatmap(x,y,z=0):
     if movil:
         xsize = 8
     
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+
     fig.update_layout(height=500, yaxis=dict(categoryorder='category descending'))
     fig.update_layout(
-    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+    #title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     yaxis_title=f'<b style="font-size:1.4em">{ejey}</b>',
     #legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
@@ -221,8 +224,11 @@ def area(x,y, z=0):
     if movil:
         xsize = 8
 
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+
     fig.update_layout(
-    title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+    # title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
     legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -270,8 +276,11 @@ def burbujas(x,y, z=0):
     if movil:
         xsize = 8
 
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+
     fig.update_layout(
-    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+    # title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -322,8 +331,11 @@ def barras_apiladas(x,y, z=0):
     if movil:
         xsize = 8
 
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+
     fig.update_layout(
-    title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+    # title={'text': f"Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -373,9 +385,12 @@ def barras_log(x,y,z=0):
 
     if movil:
         xsize = 8
+	
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
 
     fig.update_layout(
-    title={'text': f"Acumulado logarítmico de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+    # title={'text': f"Acumulado logarítmico de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -429,8 +444,11 @@ def barras_perc(x,y,z=0):
     if movil:
         xsize = 8
 
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+
     fig.update_layout(
-    title={'text': f"Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+    # title={'text': f"Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     xaxis_tickfont=dict(size=xsize),
     yaxis_tickfont=dict(size=12),
@@ -468,8 +486,11 @@ def treemap(x,y,z=0):
 	
     fig.update_traces(root_color="lightgrey")
 
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>Porporción de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+
     fig.update_layout(
-        title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
+        # title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
         xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
@@ -506,8 +527,11 @@ def sol(x,y,z=0):
     if movil:
         xsize = 8
 	
+    st.write('\n')
+    st.markdown(f"<h4 style='text-align: center;'>Porporción de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+
     fig.update_layout(
-        title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
+        # title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
         xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
