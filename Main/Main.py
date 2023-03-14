@@ -468,18 +468,27 @@ def treemap(x,y,z=0):
 	
     fig.update_traces(root_color="lightgrey")
 
-    fig.update_layout(
-        title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24,'x':0.5,'y':0.95,'xanchor': 'center','yanchor': 'top'},
-	margin=dict(t=50, b=50, l=50, r=50),
-        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
-        yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
-        legend_title=f'<b style="font-size:1.6em">{y}</b>',
-        xaxis_tickfont=dict(size=25),
-        yaxis_tickfont=dict(size=12),
-        legend_font=dict(size=20),
-        # margin = dict(t=50, l=25, r=25, b=25),
-        height=600  
-    )
+fig.update_layout(
+    title={
+        'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",
+        'font_size': 24,
+        'xanchor': 'center',
+        'yanchor': 'top',
+        'x': 0.5,
+        'y': 0.95,
+        'pad': {'b': 10}
+    },
+    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+    yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
+    legend_title=f'<b style="font-size:1.6em">{y}</b>',
+    xaxis_tickfont=dict(size=25),
+    yaxis_tickfont=dict(size=12),
+    legend_font=dict(size=20),
+    margin=dict(t=50, l=25, r=25, b=25),
+    height=600,
+    title_x=0.5
+)
+
     return fig
 
 def sol(x,y,z=0):   
