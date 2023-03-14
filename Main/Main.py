@@ -517,22 +517,30 @@ app_mode = st.sidebar.selectbox('Visibilidad por (_elegir **eje X**_):',['🏠 I
 
 if app_mode == '🏠 Inicio':
 
-    st.title('👀 Visibilidad Deportiva')
+    # st.markdown('<h1 style="text-align: center;">👀 Visibilidad Deportiva</h1>', unsafe_allow_html=True)
 
-    st.header('🗞️ ANÁLISIS DIARIOS DEPORTIVOS')
+    st.markdown('<h1 style="text-align:center"><span style="font-size: 40px;">🗞️</span> <u>ANÁLISIS DIARIOS DEPORTIVOS</u></h1>', unsafe_allow_html=True)
+    st.write('\n')
 
     st.write('#### 📈 Análisis de la visibilidad otorgada por deporte, género del redactor, equipos de fútbol, etc. y su repercusión (en web + twitter) de las noticias de las primeras planas digitales de los principales diarios deportivos en España. El objetivo de este estudio es, a partir de los datos, poner de manifiesto si existen sesgos en las decisiones de los propios diarios deportivos a la hora de decidir a qué dar visibilidad en materia deportiva.')
+    st.write('\n')
+    
+    texto = "🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar."
 
-    st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar. Los datos corresponden a las noticias del mes de enero de 2023.')
-	
-    st.markdown(
-        """
-        <div style='border: 2px solid orange; border-radius: 5px; padding: 10px'>
-            <h5 style='margin-bottom: 0px'>⚠️ La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.</h5>
-        </div>
-        """,
-        unsafe_allow_html=True)
+    #st.write('##### 🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.')
+    st.write("<span style='font-size: 19px; color: black;'>{}</span>".format(texto), unsafe_allow_html=True)
 
+    texto = """
+    <div style='border: 1.5px solid orange; border-radius: 5px'>
+        <h6 style='margin: 10px 0px; color: green; font-family: Georgia, sans-serif; font-size: 16px; padding: 10px'>
+            ⚠️ La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.
+        </h6>
+    </div>
+    """
+
+    st.markdown(texto, unsafe_allow_html=True)
+
+    st.write('\n')
     st.write('\n')
     st.write('#### 📋 Datos Totales:')
     df
@@ -577,7 +585,7 @@ elif app_mode == '💻 Web':
     x = 'web'
     y = st.sidebar.selectbox('Desagrupar por (**Dimensión**):', ['seccion', 'equipo', 'genero_redactor','repercusion'])
 
-    st.title('💻 Visibilidad por WEB')
+    st.markdown('<h1 style="text-align:center"><span style="font-size: 40px;">💻</span> <u>Visibilidad por WEB</u></h1>', unsafe_allow_html=True)
 
     st.markdown('##### Datos 🎯')
 
@@ -718,7 +726,7 @@ elif app_mode == '🏊🏻 Deporte':
     x = 'seccion'
     y = st.sidebar.selectbox('Desagrupar por (**Dimension**):', ['web' ,'equipo', 'genero_redactor', 'repercusion'])
 
-    st.title('🏊🏻 Visibilidad por DEPORTE')
+    st.markdown('<h1 style="text-align:center"><span style="font-size: 40px;">🏊🏻</span> <u>Visibilidad por DEPORTE</u></h1>', unsafe_allow_html=True)
 
     st.markdown('##### Datos 🎯')
 
@@ -856,7 +864,7 @@ elif app_mode == '⚽ Equipo':
     x = 'equipo'
     y = st.sidebar.selectbox('Desagrupar por (**Domensión**):',['web','seccion','genero_redactor','repercusion'])
 
-    st.title('⚽ Visibilidad por EQUIPO')
+    st.markdown('<h1 style="text-align:center"><span style="font-size: 40px;">⚽</span> <u>Visibilidad por EQUIPO</u></h1>', unsafe_allow_html=True)
 
     st.markdown('##### Datos 🎯')
 
@@ -995,7 +1003,7 @@ elif app_mode == '🚻 Género redactor/a':
     x = 'genero_redactor'
     y = st.sidebar.selectbox('Desagrupar por (**Dimensión**):',['web','seccion', 'equipo', 'repercusion'])
 
-    st.title('🚻 Visibilidad por GÉNERO_REDACTOR/A')
+    st.markdown('<h1 style="text-align:center"><span style="font-size: 40px;">🚻</span> <u>Visibilidad por GÉNERO_REDACTOR/A</u></h1>', unsafe_allow_html=True)
 
     st.markdown('##### Datos 🎯')
 
