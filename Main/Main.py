@@ -477,7 +477,7 @@ def treemap(x,y,z=0):
         xaxis_tickfont=dict(size=25),
         yaxis_tickfont=dict(size=12),
         legend_font=dict(size=20),
-        margin = dict(t=50, l=25, r=25, b=25),
+        # margin = dict(t=50, l=25, r=25, b=25),
         height=600  
     )
     return fig
