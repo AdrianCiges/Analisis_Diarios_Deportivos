@@ -469,7 +469,8 @@ def treemap(x,y,z=0):
     fig.update_traces(root_color="lightgrey")
 
     fig.update_layout(
-        title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24,'x':0.5,'y':0.95,'xanchor': 'center','yanchor': 'top', 'pad': {'b': 50}},
+        title={'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24,'x':0.5,'y':0.95,'xanchor': 'center','yanchor': 'top'},
+	margin=dict(t=50, b=50, l=50, r=50),
         xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
         yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
         legend_title=f'<b style="font-size:1.6em">{y}</b>',
