@@ -568,7 +568,7 @@ if app_mode == '🏠 Inicio':
 
     texto = """
     <div style='border: 1px solid #FFA500; border-radius: 5px; background-color: #FFFFE0; padding: 10px'>
-        <h6 style='margin: 5px 1px 5px 1px; color: #FF8B00; font-family: Georgia, sans-serif; font-size: 16px'>
+        <h6 style='margin: 5px 1px 0px 1px; color: #FF8B00; font-family: Georgia, sans-serif; font-size: 16px'>
             La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.
         </h6>
     </div>
