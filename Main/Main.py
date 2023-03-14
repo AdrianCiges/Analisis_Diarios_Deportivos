@@ -469,25 +469,27 @@ def treemap(x,y,z=0):
     fig.update_traces(root_color="lightgrey")
 
     fig.update_layout(
-    title={
-        'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",
-        'font_size': 24,
-        'xanchor': 'center',
-        'yanchor': 'top',
-        'x': 0.5,
-        'y': 0.95,
-        'pad': {'b': 10}
-    },
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     yaxis_title=f'<b style="font-size:1.4em">nº de noticias</b>',
     legend_title=f'<b style="font-size:1.6em">{y}</b>',
     xaxis_tickfont=dict(size=25),
     yaxis_tickfont=dict(size=12),
     legend_font=dict(size=20),
-    margin=dict(t=50, l=25, r=25, b=25),
+    margin=dict(t=100, l=25, r=25, b=25),
     height=600,
-    title_x=0.5
-    )
+    annotations=[
+        dict(
+            x=0.5,
+            y=1.05,
+            xref="paper",
+            yref="paper",
+            text=f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",
+            showarrow=False,
+            font=dict(size=24)
+        )
+        ]
+        )
+
     return fig
 
 def sol(x,y,z=0):   
