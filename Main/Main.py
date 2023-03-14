@@ -161,7 +161,7 @@ def heatmap(x,y,z=0):
     
     fig.update_layout(height=500, yaxis=dict(categoryorder='category descending'))
     fig.update_layout(
-    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
+    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.9,'x':0.5,'xanchor': 'center','yanchor': 'top'},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     yaxis_title=f'<b style="font-size:1.4em">{ejey}</b>',
     #legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
