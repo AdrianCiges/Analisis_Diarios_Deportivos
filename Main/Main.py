@@ -468,7 +468,7 @@ def treemap(x,y,z=0):
 	
     fig.update_traces(root_color="lightgrey")
 
-fig.update_layout(
+    fig.update_layout(
     title={
         'text': f"Proporción de {metrica} por {app_mode.upper()} y {ejey.upper()}",
         'font_size': 24,
@@ -487,8 +487,7 @@ fig.update_layout(
     margin=dict(t=50, l=25, r=25, b=25),
     height=600,
     title_x=0.5
-)
-
+    )
     return fig
 
 def sol(x,y,z=0):   
