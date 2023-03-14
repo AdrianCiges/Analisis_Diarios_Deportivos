@@ -518,7 +518,7 @@ def sol(x,y,z=0):
 
         df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
 
-        fig = px.sunburst(df_count, path=[x, y], values='count',height=800, width=600)
+        fig = px.sunburst(df_count, path=[x, y], values='count',height=600, width=600)
     
     else:
 
