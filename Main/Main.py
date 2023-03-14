@@ -10,7 +10,6 @@ import plotly.graph_objs as go
 from streamlit.components.v1 import html
 import base64
 import io
-from streamlit_ace import st_ace
 
 st.set_page_config(layout="wide",initial_sidebar_state="collapsed", page_icon="🗞️", page_title="Visibilidad Deportiva")
 hide_menu_style = """
@@ -162,7 +161,7 @@ def heatmap(x,y,z=0):
     
     fig.update_layout(height=500, yaxis=dict(categoryorder='category descending'))
     fig.update_layout(
-    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24},
+    title={'text': f"{metrica.capitalize()} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'xanchor': 'center'},
     xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
     yaxis_title=f'<b style="font-size:1.4em">{ejey}</b>',
     #legend_title=f'<b style="font-size:1.6em">{ejey}</b>',
