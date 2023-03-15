@@ -582,12 +582,12 @@ if app_mode == '🏠 Inicio':
     st.write('\n')
     st.write('\n')
     st.write('#### 📋 Datos Totales:')
-    df
+    with st.expander('_Ver datos totales'): 
+        df
 
     st.write('\n')
     st.write('#### 🎯 Datos Filtrados:')
     st.write('En este apartado podrás ver los datos con los filtros que hayas aplicado en el menú lateral')
-
     with st.expander('_Ver datos filtrados_'): 
         filtered_df 
 
