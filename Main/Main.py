@@ -559,23 +559,35 @@ if app_mode == '🏠 Inicio':
     st.markdown('<h5 style="text-align:left;"><span style="font-size: 28px; font-weight:semibold;">📈 Visibilidad otorgada por deporte, género del redactor, equipos de fútbol, etc. y su repercusión (en web + twitter) de las noticias de las primeras planas digitales de los principales diarios deportivos en España.</span></h5>', unsafe_allow_html=True)
     st.markdown('<h5 style="text-align:left;"><span style="font-size: 22px; font-weight:normal;">El objetivo de este estudio es, a partir de los datos, poner de manifiesto si existen sesgos en las decisiones de los propios diarios deportivos a la hora de decidir a qué dar visibilidad en materia deportiva.</span></h5>', unsafe_allow_html=True)
 
-    st.write('\n')
-    
-    st.markdown('<h5 style="text-align:center;"><span style="font-size: 22px; font-weight:semibold;">🔎 Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.</span></h5>', unsafe_allow_html=True)
 
     st.write('\n')
     st.markdown('<h5 style="text-align:center;"><span style="font-size: 22px; font-weight:semibold;">⚠️</span></h5>', unsafe_allow_html=True)
+
     st.warning('La interfaz está diseñada para ser visualizada desde un ordenador, pero, si estás accediendo desde un teléfono móvil, por favor, pulsa ✅ la casilla de "Accedo desde un móvil" (situada en el menú lateral) y rota 🔃 la pantalla para poder disfrutar del contenido con una mejor adaptación de los gráficos que vas a visualizar.')
 
     st.write('\n')
     st.write('\n')
+
+    st.write('#### 🔎 Cómo crear tus gráficos')
+    with st.expander('_La diversión empieza aquí_'): 
+        st.write('⬅️ Utiliza el panel de la izquierda para elegir filtrar datos y eliger qué ver en los ejes, colores, etc.')
+        st.write('🎯 En "**Filtrar Datos**" puedes elegir **QUÉ VER**, filtrando por DIMENSIONES [_por ejemplo noticias de fútbol (seccion) en SuperDeporte y AS (web), etc._] y/o por MÉTRICAS (los valores numéricos) [_por ejemplo, noticias con más de 10 RT y menos de 20 LIKES, etc._]')
+        st.write('👀 En los **desplegables** inferiores puedes elegir **CÓMO VERLO**, eligiendo qué ver en el **eje horizontal** usando el **primer desplegable**, y por qué dimensión **desagrupar por color** usando el **segundo desplgable**')
+        st.write('❗ Si eliges **Repercusión** en el **segundo desplegable**, podrás elegir qué **MÉTRICA** ver en el **eje vertical** usando el **cuarto desplegable** y, nuevamente, por qué por qué dimensión **desagrupar por color** usando el **tercer desplegable**')
+
+
+
+        # st.markdown('<h5 style="text-align:center;"><span style="font-size: 22px; font-weight:semibold;">Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.</span></h5>', unsafe_allow_html=True)
+
+    st.write('\n')
+    st.write('\n')
     st.write('#### 📋 Datos Totales:')
-    with st.expander('_Ver datos totales_'):
-        df
+    df
 
     st.write('\n')
     st.write('#### 🎯 Datos Filtrados:')
     st.write('En este apartado podrás ver los datos con los filtros que hayas aplicado en el menú lateral')
+
     with st.expander('_Ver datos filtrados_'): 
         filtered_df 
 
@@ -629,38 +641,103 @@ elif app_mode == '💻 Web':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor **nº de noticias** (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma del _nº de noticias_ (en valor absoluto). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(sol(x,y), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Burbujas**: el tamaño indica la suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{y}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)  
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Casillas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: suma del _nº de noticias_ (más intensidad de color a mayor nº de noticias). \n\n **Importante**: la suma del _nº de noticias_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(heatmap(x,y), use_container_width=True)   
 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **nº de noticias** correspondientes a cada {x}. Cada una de las **líneas** representa cada uno de los valores de **{y}** (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por cada {y} a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {y} al sumatorio total de noticias está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y), use_container_width=True)    
+                with st.expander('Áreas', expanded=True): 
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **diámetro**, mayor **nº de noticias** (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia a cada **{y}** (indicado en la leyenda)_') 
-                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_. \n\n **Áreas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: diferencia cada _{y}_ \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{y}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}._') 
-                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{y}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
-                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+                    st.plotly_chart(area(x,y), use_container_width=True)     
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **porcentaje de noticias** de cada {y} respecto al total para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{y}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
-
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada una de las **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{y}**. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
-                    st.plotly_chart(treemap(x,y), use_container_width=True)   
-
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada una de las **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{y}**. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y), use_container_width=True)  
 
             else:
                 st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
@@ -698,37 +775,101 @@ elif app_mode == '💻 Web':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representan los valores de **{w}**. En cada **casilla** del heatmap se representa el sumatorio de **{z}** correspondiente a cada {w} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** de {z}._') 
-                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el sumatorio de **{z}**. Cada una de las **líneas** representa cada uno de los valores de {w} (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de {z} aportado a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {w} al sumatorio total de {z} está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en valor absoluto). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** encontramos los valores de **{w}**. En cada **burbuja** del gráfico se representa el sumatorio de **{z}** correspondientes a cada {w} para la {x} que indique el eje X. A mayor **diámetro**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una burbuja verás el valor de **{z}** correspondiente. El **color** de cada burbuja hace referencia a cada {w} (indicado en la leyenda)._') 
-                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el sumatorio de {z} (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}._') 
                     st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el sumatorio de {z} (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos las **{x}**. En el **eje Y** se representa el **porcentaje** que cada {w} aporta al total de **{z}** para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
 
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada una de las **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del sumatorio de **{z}** frente al total para esa {x}. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{w}**. El **tamaño** de cada sub-caja representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _{z}_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: el % de cada _{w}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()   
+ 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)  
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{w}_. \n\n **Tamaño de las cajas**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{w}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
                     st.plotly_chart(treemap(x,y,z), use_container_width=True)   
 
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada una de las **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** de **{z}** frenta al total para esa {x}. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{w}**. El **tamaño** de cada sub-sector representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y,z), use_container_width=True) 
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{w}_. \n\n **Tamaño de las secciones**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{w}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
+                    st.plotly_chart(sol(x,y,z), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Burbujas**: el tamaño indica la suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{w}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Casillas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: suma de _{z}_ (más intensidad de color a mayor suma de _{z}_). \n\n **Importante**: la suma de _{z}_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _{z}_. \n\n **Áreas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: diferencia cada _{w}_ \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(area(x,y,z), use_container_width=True)    
       
             else:
                 st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
@@ -770,38 +911,102 @@ elif app_mode == '🏊🏻 Deporte':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma del _nº de noticias_ (en valor absoluto). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(sol(x,y), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Burbujas**: el tamaño indica la suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{y}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)  
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Casillas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: suma del _nº de noticias_ (más intensidad de color a mayor nº de noticias). \n\n **Importante**: la suma del _nº de noticias_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(heatmap(x,y), use_container_width=True)   
 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **nº de noticias** correspondientes a cada {x}. Cada una de las **líneas** representa cada uno de los valores de **{y}** (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por cada {y} a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {y} al sumatorio total de noticias está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y), use_container_width=True)    
+                with st.expander('Áreas', expanded=True): 
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia a cada {y} (indicado en la leyenda)_') 
-                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_. \n\n **Áreas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: diferencia cada _{y}_ \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}._') 
-                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
-                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
-
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **porcentaje de noticias** de cada {y} respecto al total para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
-
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{y}**. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
-                    st.plotly_chart(treemap(x,y), use_container_width=True)   
-
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{y}**. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y), use_container_width=True)    
+                    st.plotly_chart(area(x,y), use_container_width=True)     
 
             else:
                 st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
@@ -837,37 +1042,101 @@ elif app_mode == '🏊🏻 Deporte':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representan los valores de **{w}**. En cada **casilla** del heatmap se representa el sumatorio de **{z}** correspondiente a cada {w} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** de {z}._') 
-                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el sumatorio de **{z}**. Cada una de las **líneas** representa cada uno de los valores de {w} (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de {z} aportado a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {w} al sumatorio total de {z} está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en valor absoluto). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** encontramos los valores de **{w}**. En cada **burbuja** del gráfico se representa el sumatorio de **{z}** correspondientes a cada {w} para la {x} que indique el eje X. A mayor **diámetro**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una burbuja verás el valor de **{z}** correspondiente. El **color** de cada burbuja hace referencia a cada {w} (indicado en la leyenda)._') 
-                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el sumatorio de {z} (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}._') 
                     st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el sumatorio de {z} (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **porcentaje** que cada {w} aporta al total de **{z}** para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
 
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del sumatorio de **{z}** frente al total para esa {x}. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{w}**. El **tamaño** de cada sub-caja representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: porcentaje de _{z}_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: el % de cada _{w}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()   
+ 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)  
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{w}_. \n\n **Tamaño de las cajas**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{w}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
                     st.plotly_chart(treemap(x,y,z), use_container_width=True)   
 
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** de **{z}** frenta al total para esa {x}. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{w}**. El **tamaño** de cada sub-sector representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y,z), use_container_width=True)
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{w}_. \n\n **Tamaño de las secciones**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{w}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
+                    st.plotly_chart(sol(x,y,z), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Burbujas**: el tamaño indica la suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{w}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Casillas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: suma de _{z}_ (más intensidad de color a mayor suma de _{z}_). \n\n **Importante**: la suma de _{z}_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _{z}_. \n\n **Áreas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: diferencia cada _{w}_ \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(area(x,y,z), use_container_width=True)  
             else:
                 st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
 
@@ -908,38 +1177,102 @@ elif app_mode == '⚽ Equipo':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma del _nº de noticias_ (en valor absoluto). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(sol(x,y), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Burbujas**: el tamaño indica la suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{y}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)  
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Casillas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: suma del _nº de noticias_ (más intensidad de color a mayor nº de noticias). \n\n **Importante**: la suma del _nº de noticias_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(heatmap(x,y), use_container_width=True)   
 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **nº de noticias** correspondientes a cada {x}. Cada una de las **líneas** representa cada uno de los valores de **{y}** (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por cada {y} a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {y} al sumatorio total de noticias está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y), use_container_width=True)    
+                with st.expander('Áreas', expanded=True): 
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia a cada {y} (indicado en la leyenda)_') 
-                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_. \n\n **Áreas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: diferencia cada _{y}_ \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}._') 
-                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
-                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
-
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **porcentaje de noticias** de cada {y} respecto al total para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
-
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{y}**. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
-                    st.plotly_chart(treemap(x,y), use_container_width=True)   
-
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{y}**. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y), use_container_width=True)   
+                    st.plotly_chart(area(x,y), use_container_width=True)   
 
             else:
                 st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
@@ -975,37 +1308,101 @@ elif app_mode == '⚽ Equipo':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representan los valores de **{w}**. En cada **casilla** del heatmap se representa el sumatorio de **{z}** correspondiente a cada {w} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** de {z}._') 
-                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el sumatorio de **{z}**. Cada una de las **líneas** representa cada uno de los valores de {w} (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de {z} aportado a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {w} al sumatorio total de {z} está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en valor absoluto). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** encontramos los valores de **{w}**. En cada **burbuja** del gráfico se representa el sumatorio de **{z}** correspondientes a cada {w} para la {x} que indique el eje X. A mayor **diámetro**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una burbuja verás el valor de **{z}** correspondiente. El **color** de cada burbuja hace referencia a cada {w} (indicado en la leyenda)._') 
-                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el sumatorio de {z} (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}._') 
                     st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el sumatorio de {z} (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos cada **{x}**. En el **eje Y** se representa el **porcentaje** que cada {w} aporta al total de **{z}** para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
 
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del sumatorio de **{z}** frente al total para esa {x}. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{w}**. El **tamaño** de cada sub-caja representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: porcentaje de _{z}_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: el % de cada _{w}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()   
+ 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)  
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{w}_. \n\n **Tamaño de las cajas**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{w}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
                     st.plotly_chart(treemap(x,y,z), use_container_width=True)   
 
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** de **{z}** frenta al total para esa {x}. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{w}**. El **tamaño** de cada sub-sector representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y,z), use_container_width=True)
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{w}_. \n\n **Tamaño de las secciones**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{w}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
+                    st.plotly_chart(sol(x,y,z), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Burbujas**: el tamaño indica la suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{w}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Casillas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: suma de _{z}_ (más intensidad de color a mayor suma de _{z}_). \n\n **Importante**: la suma de _{z}_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _{z}_. \n\n **Áreas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: diferencia cada _{w}_ \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(area(x,y,z), use_container_width=True) 
 
 
             else:
@@ -1047,38 +1444,102 @@ elif app_mode == '🚻 Género redactor/a':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **casilla** del heatmap se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor nº de noticias (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica **nº de noticias** correspondiente._') 
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma del _nº de noticias_ (en valor absoluto). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
+
+                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(sol(x,y), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Burbujas**: el tamaño indica la suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{y}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y), use_container_width=True)  
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Casillas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: suma del _nº de noticias_ (más intensidad de color a mayor nº de noticias). \n\n **Importante**: la suma del _nº de noticias_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(heatmap(x,y), use_container_width=True)   
 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el **nº de noticias** correspondientes a cada {x}. Cada una de las **líneas** representa cada uno de los valores de **{y}** (colores indicados en la leyenda). El **área** debajo de cada línea indica el **nº noticias** aportadas por cada {y} a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {y} al sumatorio total de noticias está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y), use_container_width=True)    
+                with st.expander('Áreas', expanded=True): 
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** encontramos los valores de **{y}**. En cada **burbuja** del gráfico se representa el **nº de noticias** correspondientes a cada {y} para la {x} que indique el eje X. A mayor **diámetro**, mayor nº de noticias (y viceversa). Colocándote encima de una burbuja verás que el valor de **counts** indica **nº de noticias** correspondiente. El **color** de cada burbuja hace referencia a cada {y} (indicado en la leyenda)_') 
-                    st.plotly_chart(burbujas(x,y), use_container_width=True)   
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_. \n\n **Áreas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: diferencia cada _{y}_ \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el **nº de noticias** (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}._') 
-                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el **nº de noticias** (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
-                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
-
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el **porcentaje de noticias** de cada {y} respecto al total para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada {y} (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {y}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
-
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{y}**. El **tamaño** de cada sub-caja representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
-                    st.plotly_chart(treemap(x,y), use_container_width=True)   
-
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** del **nº de noticias** de esa {x} frente al total. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{y}**. El **tamaño** de cada sub-sector representa la **proporción** del **nº de noticias** de cada {y} frente al total de noticias de esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y), use_container_width=True)  
+                    st.plotly_chart(area(x,y), use_container_width=True) 
 
             else:
                 st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
@@ -1115,37 +1576,101 @@ elif app_mode == '🚻 Género redactor/a':
 
                 st.markdown('##### Gráficos 📈')
 
-                with st.expander('Heatmap', expanded=True): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representan los valores de **{w}**. En cada **casilla** del heatmap se representa el sumatorio de **{z}** correspondiente a cada {w} para la {x} que indique el eje X. A mayor **intensidad de color**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una casilla verás que el valor de **z** indica el **sumatorio** de {z}._') 
-                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
 
-                with st.expander('Áreas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el sumatorio de **{z}**. Cada una de las **líneas** representa cada uno de los valores de {w} (colores indicados en la leyenda). El **área** debajo de cada línea indica el sumatorio de {z} aportado a cada {x}. Colocándote encima del pico de la línea verás la información correspondiente a ese área. Téngase en cuenta que el aporte de cada {w} al sumatorio total de {z} está representado solo por el área que va desde el pico de su línea hasta el de la línea inmediatamente por debajo, no hasta el eje X._') 
-                    st.plotly_chart(area(x,y,z), use_container_width=True)    
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en valor absoluto). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
 
-                with st.expander('Burbujas', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** encontramos los valores de **{w}**. En cada **burbuja** del gráfico se representa el sumatorio de **{z}** correspondientes a cada {w} para la {x} que indique el eje X. A mayor **diámetro**, mayor sumatorio de {z} (y viceversa). Colocándote encima de una burbuja verás el valor de **{z}** correspondiente. El **color** de cada burbuja hace referencia a cada {w} (indicado en la leyenda)._') 
-                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()  
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el sumatorio de {z} (en términos absolutos) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}._') 
                     st.plotly_chart(barras_apiladas(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el sumatorio de {z} (en escala logarítmica) correspondientes a cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}. Téngase en cuenta que las distancias del eje Y son mayores conforme se asciende dada la **escala logarítmica** del eje. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos._') 
+                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: suma de _{z}_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
                     st.plotly_chart(barras_log(x,y,z), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: En el **eje X** tenemos el **{x}**. En el **eje Y** se representa el **porcentaje** que cada {w} aporta al total de **{z}** para cada {x}. Cada uno de los **colores** de las barras hace referencia a cada **{w}** (indicado en la leyenda). Colocándote encima de las barras puedes ver la información correspondiente a cada {w}, indicándose el % correspondiente para cada uno en la etiqueta "pct"._') 
-                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)   
+                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
 
-                with st.expander('Treemap', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada una de las **cajas externas** hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada una representa la **proporción** del sumatorio de **{z}** frente al total para esa {x}. Dentro de cada caja encontramos **sub-cajas**, donde cada una hace referencia a cada **{w}**. El **tamaño** de cada sub-caja representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** las cajas puedes ampliar la visualización. Para volver al origen, puedes hacer click en "TODOS"._') 
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: porcentaje de _{z}_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{w}_. \n\n **Importante**: el % de cada _{w}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()   
+ 
+                    st.plotly_chart(barras_perc(x,y,z), use_container_width=True)  
+
+                with st.expander('Treemap', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{w}_. \n\n **Tamaño de las cajas**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{w}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
                     st.plotly_chart(treemap(x,y,z), use_container_width=True)   
 
-                with st.expander('Gráfico Solar', expanded=False): 
-                    st.write(f'_❓ **CÓMO INTERPRETAR ESTE GRÁFICO**: Cada uno de las **sectores** del círculo interno hace referencia a cada **{x}** (diferenciadas por colores). El **tamaño** de cada uno representa la **proporción** de **{z}** frenta al total para esa {x}. Dentro de cada sector interno encontramos **sub-sectores**, donde cada uno hace referencia a cada **{w}**. El **tamaño** de cada sub-sector representa la **proporción** de **{z}** frente al total para cada {w} en esa {x}. Haciendo **click** en los sectores internos puedes ampliar la visualización. Para volver al origen, puedes hacer click en el centro._') 
-                    st.plotly_chart(sol(x,y,z), use_container_width=True)
+                with st.expander('Gráfico Solar', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{w}_. \n\n **Tamaño de las secciones**: proporcional al sumatorio de _{z}_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{w}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text()
+
+                    st.plotly_chart(sol(x,y,z), use_container_width=True)  
+
+                with st.expander('Burbujas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+                            texto = st.write(f"**Eje horizontal**: cada _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Burbujas**: el tamaño indica la suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{w}_")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(burbujas(x,y,z), use_container_width=True)   
+
+                with st.expander('Mapa de calor', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{w}_. \n\n **Casillas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: suma de _{z}_ (más intensidad de color a mayor suma de _{z}_). \n\n **Importante**: la suma de _{z}_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(heatmap(x,y,z), use_container_width=True)    
+
+                with st.expander('Áreas', expanded=True): 
+
+                    def show_hide_text():
+                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _{z}_. \n\n **Áreas**: suma de _{z}_ de cada _{w}_ en cada _{x}_. \n\n **Color**: diferencia cada _{w}_ \n\n **Importante**: la aportación de cada _{w}_ al total de _{z}_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
+
+                            if st.button("❌ Ocultar"):
+                                texto.empty()
+                    show_hide_text() 
+
+                    st.plotly_chart(area(x,y,z), use_container_width=True) 
 
             else:
                 st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
@@ -1163,4 +1688,3 @@ elif app_mode == '🚻 Género redactor/a':
 
             with col2:
                 st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
-
