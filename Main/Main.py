@@ -582,7 +582,7 @@ if app_mode == '🏠 Inicio':
     st.write('\n')
     st.write('\n')
     st.write('#### 📋 Datos Totales:')
-    with st.expander('_Ver datos totales'): 
+    with st.expander('_Ver datos totales_'): 
         df
 
     st.write('\n')
