@@ -599,7 +599,7 @@ if app_mode == '🏠 Inicio':
         st.write('⬅️ Utiliza el **panel de la izquierda** para elegir filtrar datos y/o decidir qué ver en los ejes, en los colores, etc.')
         def show_hide_img():
             if st.button("**Ayuda gráfica 📷**"):
-                imagen = st.image(f"data:image/png;base64,{b64_2}", use_column_width=False, width = 800) 
+                imagen = st.image(f"data:image/png;base64,{b64_2}", use_column_width=True) 
                 if st.button("❌ Ocultar"):
                     imagen.empty()
         show_hide_img()
