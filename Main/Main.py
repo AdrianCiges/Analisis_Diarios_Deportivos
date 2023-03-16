@@ -29,7 +29,7 @@ with io.BytesIO() as output:
     image_inicio.save(output, format="PNG")
     b64_1 = base64.b64encode(output.getvalue()).decode()
 
-image_icono = Image.open("./img/icono.png")
+image_icono = Image.open("./img/AS.png")
 with io.BytesIO() as output:
     image_icono.save(output, format="PNG")
     b64_2 = base64.b64encode(output.getvalue()).decode()
