@@ -570,9 +570,9 @@ if app_mode == '🏠 Inicio':
 
     st.write('#### 🔎 Cómo crear tus gráficos')
     with st.expander('_La diversión empieza aquí_', expanded=True): 
-        st.write('⬅️ Utiliza el **panel de la izquierda** para elegir filtrar datos y decidir qué ver en los ejes, en los colores, etc.')
+        st.write('⬅️ Utiliza el **panel de la izquierda** para elegir filtrar datos y/o decidir qué ver en los ejes, en los colores, etc.')
         st.write('🎯 En "**Filtrar Datos**" puedes elegir **QUÉ VER**, filtrando por DIMENSIONES [_por ejemplo noticias de baloncesto y motor (seccion) publicadas en SuperDeporte y AS (web), etc._] y/o por MÉTRICAS (los valores numéricos) [_por ejemplo, noticias con más de 10 RT y menos de 20 LIKES, etc._]')
-        st.write('👀 En los **desplegables** de la parte inferior del menú lateral puedes elegir **CÓMO VERLO**, eligiendo qué ver en el **eje horizontal** usando el **primer desplegable**, y por qué dimensión **desagrupar por color** usando el **segundo desplgable**')
+        st.write('👀 En los **desplegables** de la parte inferior del menú lateral puedes elegir **CÓMO VERLO**, eligiendo qué ver en el **eje horizontal** usando el **primer desplegable**, y por qué dimensión **desagrupar por color** usando el **segundo desplegable**')
         st.write('❗ Si eliges **Repercusion** en el **segundo desplegable**, podrás elegir qué **MÉTRICA** ver en el **eje vertical** usando el **cuarto desplegable** y, nuevamente, por qué dimensión **desagrupar por color** usando el **tercer desplegable**')
         st.write('🌐 Si no especificas algún filtro, se seleccionan todos las DIMENSIONES y MÉTRICAS de los datos')
 
