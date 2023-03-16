@@ -2,7 +2,7 @@
 ## CONTENIDO 📑
 [1 - Objetivo 🎯](#O)<br />
 [2 - Extracción, Transformación y Carga ⚙️](#ETL) <br />
-[3 - Streamlit 🌐](#ST)<br />
+[3 - Streamlit 💻](#ST)<br />
 [4 - Link 🌐](#LK)<br />
  
 ## 1 - OBJETIVO 🎯<a name="O"/>   
@@ -43,7 +43,7 @@
 🚻 Obtenemos el género de los redactores: A través del registro de nombres del INE, clasificamos a l@s redactores/as en 'hombre', 'mujer' o 'desconocido'.
 
 
-## 3 - STREAMLIT 🌐 <a name="ST"/>
+## 3 - STREAMLIT 💻 <a name="ST"/>
 ### Creamos la interfaz para la visualización y manejo de los datos a través de Streamlit.
 
 &emsp; &emsp; • Estructura: Creamos el código python para levantar la interfaz a través de la librería streamlit. <br /> 
