@@ -29,6 +29,31 @@ with io.BytesIO() as output:
     image_inicio.save(output, format="PNG")
     b64_1 = base64.b64encode(output.getvalue()).decode()
 
+image_icono = Image.open("./img/icono.png")
+with io.BytesIO() as output:
+    image_icono.save(output, format="PNG")
+    b64_2 = base64.b64encode(output.getvalue()).decode()
+
+image_filtrar = Image.open("./img/filtrar.png")
+with io.BytesIO() as output:
+    image_filtrar.save(output, format="PNG")
+    b64_3 = base64.b64encode(output.getvalue()).decode()
+
+image_desplegable12 = Image.open("./img/desplegables12.png")
+with io.BytesIO() as output:
+    image_desplegable12.save(output, format="PNG")
+    b64_4 = base64.b64encode(output.getvalue()).decode()
+
+image_desplegable34 = Image.open("./img/desplegables34.png")
+with io.BytesIO() as output:
+    image_desplegable34.save(output, format="PNG")
+    b64_5 = base64.b64encode(output.getvalue()).decode()
+
+image_boton = Image.open("./img/boton.png")
+with io.BytesIO() as output:
+    image_boton.save(output, format="PNG")
+    b64_6 = base64.b64encode(output.getvalue()).decode()
+
 
 
 def filter_data(df, op_web, op_seccion, op_equipo, op_genero, op_comentarios, op_tweets, op_alcance, op_likes, op_retweets, op_respuestas, op_repercusion, op_exito):
@@ -570,15 +595,50 @@ if app_mode == '🏠 Inicio':
 
     st.write('#### 🔎 Cómo crear tus gráficos')
     with st.expander('_La diversión empieza aquí_', expanded=True): 
-        st.write('⬅️ Utiliza el **panel de la izquierda** <img src="./img/icono.png" alt="" width="100" height="100"> para elegir filtrar datos y/o decidir qué ver en los ejes, en los colores, etc.', unsafe_allow_html=True)
-        st.write('🎯 En "**Filtrar Datos**" puedes elegir **QUÉ VER**, filtrando por DIMENSIONES [_por ejemplo noticias de baloncesto y motor (seccion) publicadas en SuperDeporte y AS (web), etc._] y/o por MÉTRICAS (los valores numéricos) [_por ejemplo, noticias con más de 10 RT y menos de 20 LIKES, etc._]')
-        st.write('👀 En los **desplegables** de la parte inferior del menú lateral puedes elegir **CÓMO VERLO**, eligiendo qué ver en el **eje horizontal** usando el **primer desplegable**, y por qué dimensión **desagrupar por color** usando el **segundo desplegable**')
+
+        st.write('⬅️ Utiliza el **panel de la izquierda** para elegir filtrar datos y/o decidir qué ver en los ejes, en los colores, etc.')
+        def show_hide_img():
+            if st.button("**Ayuda gráfica 📷**"):
+                imagen = st.image(f"data:image/png;base64,{b64_2}", use_column_width=False, width = 800) 
+                if st.button("❌ Ocultar"):
+                    imagen.empty()
+        show_hide_img()
+
+        st.write('🎯 En "**Filtrar Datos**" puedes elegir **QUÉ VER**, filtrando por DIMENSIONES [_por ejemplo noticias de baloncesto y motor (seccion) publicadas en SuperDeporte y AS (web), etc._] y/o por MÉTRICAS (los valores numéricos) [_por ejemplo, noticias con más de 220 RT y menos de 3130 LIKES, etc._].')
+
+        def show_hide_img():
+            if st.button("**Ejemplo de filtrado ✂️**"):
+                imagen = st.image(f"data:image/png;base64,{b64_3}", use_column_width=False, width = 300) 
+                if st.button("❌ Ocultar"):
+                    imagen.empty()
+        show_hide_img()
+
+        st.write('🌐 Si no especificas algún filtro, se seleccionan todos las DIMENSIONES y MÉTRICAS de los datos, pero si has elegido alguno, no olvides pulsar el botón de "Filtrar Datos".')
+
+        def show_hide_img():
+            if st.button("**Pulsa el botón 👆🏻**"):
+                imagen = st.image(f"data:image/png;base64,{b64_6}", use_column_width=False, width = 300) 
+                if st.button("❌ Ocultar"):
+                    imagen.empty()
+        show_hide_img()
+
+        st.write('👀 En los **desplegables** de la parte inferior del menú lateral puedes elegir **CÓMO VERLO**, eligiendo qué ver en el **eje horizontal** usando el **primer desplegable**, y por qué dimensión **desagrupar por color** usando el **segundo desplegable**.')
+
+        def show_hide_img():
+            if st.button("**Ejemplo de desplegables ⬇️**"):
+                imagen = st.image(f"data:image/png;base64,{b64_4}", use_column_width=False, width = 300) 
+                if st.button("❌ Ocultar"):
+                    imagen.empty()
+        show_hide_img()
+
         st.write('❗ Si eliges **Repercusion** en el **segundo desplegable**, podrás elegir qué **MÉTRICA** ver en el **eje vertical** usando el **cuarto desplegable** y, nuevamente, por qué dimensión **desagrupar por color** usando el **tercer desplegable**')
-        st.write('🌐 Si no especificas algún filtro, se seleccionan todos las DIMENSIONES y MÉTRICAS de los datos')
 
-
-
-        # st.markdown('<h5 style="text-align:center;"><span style="font-size: 22px; font-weight:semibold;">Puedes navegar a través de diferentes gráficos interactivos usando el panel de la izquierda, confeccionando tu propio gráfico según campos, ejes y métricas que desees analizar.</span></h5>', unsafe_allow_html=True)
+        def show_hide_img():
+            if st.button("**Ejemplo Repercusión 🔢**"):
+                imagen = st.image(f"data:image/png;base64,{b64_5}", use_column_width=False, width = 300) 
+                if st.button("❌ Ocultar"):
+                    imagen.empty()
+        show_hide_img()
 
     st.write('\n')
     st.write('\n')
