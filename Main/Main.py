@@ -11,6 +11,16 @@ from streamlit.components.v1 import html
 import base64
 import io
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EMZNHRNE90"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-EMZNHRNE90');
+</script>
+
 st.set_page_config(layout="wide",initial_sidebar_state="collapsed", page_icon="🗞️", page_title="Visibilidad Deportiva")
 hide_menu_style = """
         <style>
