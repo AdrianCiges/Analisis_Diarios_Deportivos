@@ -11,6 +11,15 @@ from streamlit.components.v1 import html
 import base64
 import io
 
+st.set_page_config(layout="wide",initial_sidebar_state="collapsed", page_icon="🗞️", page_title="Visibilidad Deportiva")
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
+
 def add_google_analytics():
     st.markdown(
         """
@@ -29,14 +38,6 @@ def add_google_analytics():
 
 # Llamada a la función add_google_analytics en el lugar apropiado del código
 add_google_analytics()
-
-st.set_page_config(layout="wide",initial_sidebar_state="collapsed", page_icon="🗞️", page_title="Visibilidad Deportiva")
-hide_menu_style = """
-        <style>
-        #MainMenu {visibility: hidden;}
-        </style>
-        """
-st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 df = pd.read_excel('./data/repercusion_noticias_deportivas.xlsx')
 df = df.drop(['link','noticia','fecha_publicacion','fecha_actual','desactualizacion'], axis=1)
