@@ -19,8 +19,6 @@ hide_menu_style = """
         """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
-st.sidebar.markdown('![Visitor count](https://shields-io-visitor-counter.herokuapp.com/badge?page=https://share.streamlit.io/your_deployed_app_link&label=VisitorsCount&labelColor=000000&logo=GitHub&logoColor=FFFFFF&color=1D70B8&style=for-the-badge)')
-
 def add_google_analytics():
     st.markdown(
         """
@@ -700,6 +698,8 @@ if app_mode == '🏠 Inicio':
     st.markdown("##### https://www.estadiodeportivo.com/")
     st.markdown("##### https://www.superdeporte.es/")
 
+    st.write('\n')
+    st.markdown('![Visitor count](https://shields-io-visitor-counter.herokuapp.com/badge?page=https://share.streamlit.io/your_deployed_app_link&label=VisitorsCount&labelColor=000000&logo=GitHub&logoColor=FFFFFF&color=1D70B8&style=for-the-badge)')
 
 elif app_mode == '💻 Web':
 
