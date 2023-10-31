@@ -450,9 +450,14 @@ def barras_log(x,y,z=0):
     )            
     return fig
 
-def barras_perc(x, y, z=0, movil=False, w=None, filtered_df=None):   
+import pandas as pd
+import plotly.express as px
 
-    if x in ['seccion', 'deporte', 'equipo']:
+def barras_perc(x, y, z=0, filtered_df=None):
+    if filtered_df is None or not isinstance(filtered_df, pd.DataFrame):
+        raise ValueError("filtered_df debe ser un DataFrame válido.")
+
+    if x == 'seccion' or x == 'deporte' or x == 'equipo':
         angle = 25
         xsize = 16
     else:
@@ -461,31 +466,38 @@ def barras_perc(x, y, z=0, movil=False, w=None, filtered_df=None):
 
     if y != 'repercusion':
         ejey = y
-        metrica = 'nº de noticias'
-        df_pcts = filtered_df.groupby([x, y]).size().reset_index(name='count')
-        df_pcts['pct'] = df_pcts.groupby(x)['count'].apply(lambda x: x / float(x.sum()) * 100)
-        legend_order = sorted(list(df_pcts[y].unique()))
+        metrica = 'porcentaje de noticias'
+        
+        # Calcular el total y el porcentaje
+        df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
+        df_total = df_count.groupby(x)['count'].transform('sum')
+        df_count['porcentaje'] = 100 * df_count['count'] / df_total
 
-        fig = px.bar(df_pcts, x=x, y='pct', color=y, barmode='stack', category_orders={x: list(df_pcts[x].unique()), y: legend_order})
-        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de noticias</b>', legend_title=f'<b style="font-size:1.6em">{y}</b>')
+        legend_order = sorted(list(df_count[y].unique()))
 
+        fig = px.bar(df_count, x=x, y='porcentaje', color=y,
+                     category_orders={x: list(df_count[x].unique()), y: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">porcentaje de noticias</b>', legend_title=f'<b style="font-size:1.6em">{y}</b>')
+    
     else:
-        if isinstance(z, int) or z == 0:
-            raise ValueError("El parámetro 'z' debe ser una columna válida cuando 'y' es 'repercusion'")
         ejey = w
-        metrica = z
-        df_pcts = filtered_df.groupby([x, w]).sum().reset_index()
-        df_pcts['pct'] = df_pcts.groupby(x)[z].apply(lambda x: x / float(x.sum()) * 100)
-        legend_order = sorted(list(df_pcts[w].unique()))
+        metrica = f"porcentaje de {z}"
 
-        fig = px.bar(df_pcts, x=x, y='pct', color=w, barmode='stack', category_orders={x: list(df_pcts[x].unique()), w: legend_order})
-        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de {z}</b>', legend_title=f'<b style="font-size:1.6em">{w}</b>')
+        df_count = filtered_df.groupby([x, w]).sum().reset_index()
+        df_total = df_count.groupby(x)[z].transform('sum')
+        df_count['porcentaje'] = 100 * df_count[z] / df_total
+
+        legend_order = sorted(list(df_count[w].unique()))
+
+        fig = px.bar(df_count, x=x, y='porcentaje', color=w,
+                     category_orders={x: list(df_count[x].unique()), w: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">porcentaje de {z}</b>', legend_title=f'<b style="font-size:1.6em">{w}</b>')
 
     if movil:
         xsize = 8
 
     st.write('\n')
-    st.markdown(f"<h4 style='text-align: center;'>Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+    st.markdown(f"<h4 style='text-align: center;'>Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
 
     fig.update_layout(
         xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
@@ -496,8 +508,10 @@ def barras_perc(x, y, z=0, movil=False, w=None, filtered_df=None):
         legend_traceorder='normal',
         height=600,
         margin=dict(t=30)
-    )            
+    )
+    
     return fig
+
 
 def treemap(x,y,z=0):   
 
