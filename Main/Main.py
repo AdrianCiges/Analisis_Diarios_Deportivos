@@ -773,17 +773,17 @@ elif app_mode == '💻 Web':
 
                 #     st.plotly_chart(treemap(x,y), use_container_width=True)   
 
-                with st.expander('Gráfico Solar', expanded=True): 
+                # with st.expander('Gráfico Solar', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
-                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+                #     def show_hide_text():
+                #         if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+                #             texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text() 
+                #             if st.button("❌ Ocultar"):
+                #                 texto.empty()
+                #     show_hide_text() 
 
-                    st.plotly_chart(sol(x,y), use_container_width=True)  
+                #     st.plotly_chart(sol(x,y), use_container_width=True)  
 
                 with st.expander('Burbujas', expanded=True): 
 
