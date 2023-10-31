@@ -717,7 +717,7 @@ elif app_mode == '💻 Web':
 
     if y != 'repercusion':
 
-        try:
+        while 1:
 
             if filtered_df.shape[0] != 0:
 
@@ -831,14 +831,14 @@ elif app_mode == '💻 Web':
                 with col2:
                     st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
                  
-        except:
+        # except:
 
-            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+        #     st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
 
-            col1, col2, col3 = st.columns((1,3,1))
+        #     col1, col2, col3 = st.columns((1,3,1))
 
-            with col2:
-                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
+        #     with col2:
+        #         st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
 
         
     else:
