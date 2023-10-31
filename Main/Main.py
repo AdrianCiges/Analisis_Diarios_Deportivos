@@ -749,17 +749,17 @@ elif app_mode == '💻 Web':
 
                     st.plotly_chart(barras_log(x,y), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
+                # with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+                #     def show_hide_text():
+                #         if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                #             texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text()  
+                #             if st.button("❌ Ocultar"):
+                #                 texto.empty()
+                #     show_hide_text()  
 
-                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+                #     st.plotly_chart(barras_perc(x,y), use_container_width=True)   
 
                 with st.expander('Treemap', expanded=True): 
 
