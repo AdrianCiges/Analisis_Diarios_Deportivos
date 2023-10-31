@@ -450,9 +450,9 @@ def barras_log(x,y,z=0):
     )            
     return fig
 
-def barras_perc(x,y,z=0):   
+def barras_perc(x, y, z=0, movil=False, w=None, filtered_df=None):   
 
-    if x == 'seccion' or x == 'deporte' or x == 'equipo':
+    if x in ['seccion', 'deporte', 'equipo']:
         angle = 25
         xsize = 16
     else:
@@ -460,35 +460,26 @@ def barras_perc(x,y,z=0):
         xsize = 25
 
     if y != 'repercusion':
-
         ejey = y
-
         metrica = 'nº de noticias'
-
         df_pcts = filtered_df.groupby([x, y]).size().reset_index(name='count')
         df_pcts['pct'] = df_pcts.groupby(x)['count'].apply(lambda x: x / float(x.sum()) * 100)
         legend_order = sorted(list(df_pcts[y].unique()))
 
-
-        fig = px.bar(df_pcts, x=x, y='pct', color=y,
-             barmode='stack', category_orders={x: list(df_pcts[x].unique()), y: legend_order})
-
-        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
+        fig = px.bar(df_pcts, x=x, y='pct', color=y, barmode='stack', category_orders={x: list(df_pcts[x].unique()), y: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de noticias</b>', legend_title=f'<b style="font-size:1.6em">{y}</b>')
 
     else:
-
+        if isinstance(z, int) or z == 0:
+            raise ValueError("El parámetro 'z' debe ser una columna válida cuando 'y' es 'repercusion'")
         ejey = w
-
         metrica = z
-
         df_pcts = filtered_df.groupby([x, w]).sum().reset_index()
         df_pcts['pct'] = df_pcts.groupby(x)[z].apply(lambda x: x / float(x.sum()) * 100)
         legend_order = sorted(list(df_pcts[w].unique()))
 
-
-        fig = px.bar(df_pcts, x=x, y='pct', color=w,
-             barmode='stack', category_orders={x: list(df_pcts[x].unique()), w: legend_order})
-        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
+        fig = px.bar(df_pcts, x=x, y='pct', color=w, barmode='stack', category_orders={x: list(df_pcts[x].unique()), w: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de {z}</b>', legend_title=f'<b style="font-size:1.6em">{w}</b>')
 
     if movil:
         xsize = 8
@@ -497,15 +488,14 @@ def barras_perc(x,y,z=0):
     st.markdown(f"<h4 style='text-align: center;'>Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
 
     fig.update_layout(
-    # title={'text': f"Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
-    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
-    xaxis_tickfont=dict(size=xsize),
-    yaxis_tickfont=dict(size=12),
-    xaxis=dict(tickangle=angle, categoryorder='category ascending'),
-    legend_font=dict(size=20),
-    legend_traceorder='normal',
-    height=600,
-    margin=dict(t=30)
+        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+        xaxis_tickfont=dict(size=xsize),
+        yaxis_tickfont=dict(size=12),
+        xaxis=dict(tickangle=angle, categoryorder='category ascending'),
+        legend_font=dict(size=20),
+        legend_traceorder='normal',
+        height=600,
+        margin=dict(t=30)
     )            
     return fig
 
