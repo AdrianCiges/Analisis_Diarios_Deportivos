@@ -450,12 +450,7 @@ def barras_log(x,y,z=0):
     )            
     return fig
 
-import pandas as pd
-import plotly.express as px
-
-def barras_perc(x, y, z=0, filtered_df=None):
-    if filtered_df is None or not isinstance(filtered_df, pd.DataFrame):
-        raise ValueError("filtered_df debe ser un DataFrame válido.")
+def barras_perc(x,y,z=0):   
 
     if x == 'seccion' or x == 'deporte' or x == 'equipo':
         angle = 25
@@ -465,53 +460,54 @@ def barras_perc(x, y, z=0, filtered_df=None):
         xsize = 25
 
     if y != 'repercusion':
+
         ejey = y
-        metrica = 'porcentaje de noticias'
-        
-        # Calcular el total y el porcentaje
-        df_count = filtered_df.groupby([x, y]).size().reset_index(name='count')
-        df_total = df_count.groupby(x)['count'].transform('sum')
-        df_count['porcentaje'] = 100 * df_count['count'] / df_total
 
-        legend_order = sorted(list(df_count[y].unique()))
+        metrica = 'nº de noticias'
 
-        fig = px.bar(df_count, x=x, y='porcentaje', color=y,
-                     category_orders={x: list(df_count[x].unique()), y: legend_order})
-        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">porcentaje de noticias</b>', legend_title=f'<b style="font-size:1.6em">{y}</b>')
-    
+        df_pcts = filtered_df.groupby([x, y]).size().reset_index(name='count')
+        df_pcts['pct'] = df_pcts.groupby(x)['count'].apply(lambda x: x / float(x.sum()) * 100)
+        legend_order = sorted(list(df_pcts[y].unique()))
+
+
+        fig = px.bar(df_pcts, x=x, y='pct', color=y,
+             barmode='stack', category_orders={x: list(df_pcts[x].unique()), y: legend_order})
+
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de noticias</b>',legend_title=f'<b style="font-size:1.6em">{y}</b>')
+
     else:
+
         ejey = w
-        metrica = f"porcentaje de {z}"
 
-        df_count = filtered_df.groupby([x, w]).sum().reset_index()
-        df_total = df_count.groupby(x)[z].transform('sum')
-        df_count['porcentaje'] = 100 * df_count[z] / df_total
+        metrica = z
 
-        legend_order = sorted(list(df_count[w].unique()))
+        df_pcts = filtered_df.groupby([x, w]).sum().reset_index()
+        df_pcts['pct'] = df_pcts.groupby(x)[z].apply(lambda x: x / float(x.sum()) * 100)
+        legend_order = sorted(list(df_pcts[w].unique()))
 
-        fig = px.bar(df_count, x=x, y='porcentaje', color=w,
-                     category_orders={x: list(df_count[x].unique()), w: legend_order})
-        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">porcentaje de {z}</b>', legend_title=f'<b style="font-size:1.6em">{w}</b>')
+
+        fig = px.bar(df_pcts, x=x, y='pct', color=w,
+             barmode='stack', category_orders={x: list(df_pcts[x].unique()), w: legend_order})
+        fig.update_layout(yaxis_title=f'<b style="font-size:1.4em">% de {z}</b>',legend_title=f'<b style="font-size:1.6em">{w}</b>')
 
     if movil:
         xsize = 8
 
     st.write('\n')
-    st.markdown(f"<h4 style='text-align: center;'>Acumulado de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
+    st.markdown(f"<h4 style='text-align: center;'>Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}</h4>", unsafe_allow_html=True)
 
     fig.update_layout(
-        xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
-        xaxis_tickfont=dict(size=xsize),
-        yaxis_tickfont=dict(size=12),
-        xaxis=dict(tickangle=angle, categoryorder='category ascending'),
-        legend_font=dict(size=20),
-        legend_traceorder='normal',
-        height=600,
-        margin=dict(t=30)
-    )
-    
+    # title={'text': f"Porcentaje de {metrica} por {app_mode.upper()} y {ejey.upper()}",'font_size': 24, 'y':0.95,'x':0.5,'xanchor': 'center','yanchor': 'top'},
+    xaxis_title=f'<b style="font-size:1.2em">{x}</b>',
+    xaxis_tickfont=dict(size=xsize),
+    yaxis_tickfont=dict(size=12),
+    xaxis=dict(tickangle=angle, categoryorder='category ascending'),
+    legend_font=dict(size=20),
+    legend_traceorder='normal',
+    height=600,
+    margin=dict(t=30)
+    )            
     return fig
-
 
 def treemap(x,y,z=0):   
 
@@ -721,7 +717,7 @@ elif app_mode == '💻 Web':
 
     if y != 'repercusion':
 
-        while 1:
+        try:
 
             if filtered_df.shape[0] != 0:
 
@@ -753,29 +749,29 @@ elif app_mode == '💻 Web':
 
                     st.plotly_chart(barras_log(x,y), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
+                # with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+                #     def show_hide_text():
+                #         if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+                #             texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text()  
+                #             if st.button("❌ Ocultar"):
+                #                 texto.empty()
+                #     show_hide_text()  
 
-                    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+                #     st.plotly_chart(barras_perc(x,y), use_container_width=True)   
 
-                with st.expander('Treemap', expanded=True): 
+                # with st.expander('Treemap', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
-                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+                #     def show_hide_text():
+                #         if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+                #             texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text() 
+                #             if st.button("❌ Ocultar"):
+                #                 texto.empty()
+                #     show_hide_text() 
 
-                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+                #     st.plotly_chart(treemap(x,y), use_container_width=True)   
 
                 with st.expander('Gráfico Solar', expanded=True): 
 
@@ -835,14 +831,14 @@ elif app_mode == '💻 Web':
                 with col2:
                     st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
                  
-        # except:
+        except:
 
-        #     st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
 
-        #     col1, col2, col3 = st.columns((1,3,1))
+            col1, col2, col3 = st.columns((1,3,1))
 
-        #     with col2:
-        #         st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
+            with col2:
+                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
 
         
     else:
