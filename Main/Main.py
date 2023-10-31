@@ -717,128 +717,128 @@ elif app_mode == '💻 Web':
 
     if y != 'repercusion':
 
-        try:
+        # try:
 
-            if filtered_df.shape[0] != 0:
+    if filtered_df.shape[0] != 0:
 
-                st.markdown('######')
+	st.markdown('######')
 
-                st.markdown('##### Gráficos 📈')
+	st.markdown('##### Gráficos 📈')
 
-                with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
+	with st.expander('Barras Apiladas - Valores Absolutos', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma del _nº de noticias_ (en valor absoluto). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**   "):
+		    texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma del _nº de noticias_ (en valor absoluto). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área ocupada por su color en cada barra.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text()  
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text()  
 
-                    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
+	    st.plotly_chart(barras_apiladas(x,y), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
+	with st.expander('Barras Apiladas - Escala Logarítmica', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**    "):
+		    texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_ (en escala logarítmica). \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: las distancias del eje vertical son mayores conforme se asciende dada la escala logarítmica. Esto ayuda a ver mejor valores que en términos absolutos quedan muy ocultos.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text()  
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text()  
 
-                    st.plotly_chart(barras_log(x,y), use_container_width=True)   
+	    st.plotly_chart(barras_log(x,y), use_container_width=True)   
 
-                with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
+	with st.expander('Barras Apiladas - Escala Porcentual', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**     "):
+		    texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: porcentaje de _nº de noticias_ frente al total de cada {x}. \n\n **Colores**: diferencia cada _{y}_. \n\n **Importante**: el % de cada _{y}_ en cada _{x}_ se puede ver en la etiqueta _pct_ al pulsar el color correspondiente.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text()  
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text()  
 
-    	st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+		st.plotly_chart(barras_perc(x,y), use_container_width=True)   
 
-                with st.expander('Treemap', expanded=True): 
+	with st.expander('Treemap', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
-                            texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**      "):
+		    texto = st.write(f"**Cajas externas**: cada _{x}_. \n\n **Cajas internas**: cada _{y}_. \n\n **Tamaño de las cajas**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las cajas externas) y de cada _{y}_ en cada _{x}_ (en las cajas internas). \n\n **Importante**: puedes pulsar en las cajas para ver mejor su contenido y luego pulsar en TODOS para volver a la vista inicial.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text() 
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text() 
 
-                    st.plotly_chart(treemap(x,y), use_container_width=True)   
+	    st.plotly_chart(treemap(x,y), use_container_width=True)   
 
-                with st.expander('Gráfico Solar', expanded=True): 
+	with st.expander('Gráfico Solar', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
-                            texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**       "):
+		    texto = st.write(f"**Secciones internas**: cada _{x}_. \n\n **Secciones externas**: cada _{y}_. \n\n **Tamaño de las secciones**: proporcional al _nº de noticias_ de cada _{x}_ frente al total (en las secciones internas) y de cada _{y}_ en cada _{x}_ (en las secciones externas). \n\n **Importante**: puedes pulsar en las secciones para ver mejor su contenido y luego pulsar el medio para volver a la vista inicial.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text() 
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text() 
 
-                    st.plotly_chart(sol(x,y), use_container_width=True)  
+	    st.plotly_chart(sol(x,y), use_container_width=True)  
 
-                with st.expander('Burbujas', expanded=True): 
+	with st.expander('Burbujas', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Burbujas**: el tamaño indica la suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{y}_")
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**  "):
+		    texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Burbujas**: el tamaño indica la suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: Diferencia cada _{y}_")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text() 
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text() 
 
-                    st.plotly_chart(burbujas(x,y), use_container_width=True)  
+	    st.plotly_chart(burbujas(x,y), use_container_width=True)  
 
-                with st.expander('Mapa de calor', expanded=True): 
+	with st.expander('Mapa de calor', expanded=True): 
 
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Casillas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: suma del _nº de noticias_ (más intensidad de color a mayor nº de noticias). \n\n **Importante**: la suma del _nº de noticias_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO**"):
+		    texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: cada _{y}_. \n\n **Casillas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: suma del _nº de noticias_ (más intensidad de color a mayor nº de noticias). \n\n **Importante**: la suma del _nº de noticias_ se puede ver en la etiqueta 'z' al pulsar cada casilla.")
 
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text() 
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text() 
 
-                    st.plotly_chart(heatmap(x,y), use_container_width=True)   
-
-
-                with st.expander('Áreas', expanded=True): 
-
-                    def show_hide_text():
-                        if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
-                            texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_. \n\n **Áreas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: diferencia cada _{y}_ \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
-
-                            if st.button("❌ Ocultar"):
-                                texto.empty()
-                    show_hide_text()  
-
-                    st.plotly_chart(area(x,y), use_container_width=True)     
+	    st.plotly_chart(heatmap(x,y), use_container_width=True)   
 
 
-            else:
-                st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+	with st.expander('Áreas', expanded=True): 
 
-                col1, col2, col3 = st.columns((1,3,1))
+	    def show_hide_text():
+		if st.button("**🤔 CÓMO INTERPRETAR ESTE GRÁFICO** "):
+		    texto = st.write(f"**Eje horizontal**: las _{x}_. \n\n **Eje vertical**: suma de _nº de noticias_. \n\n **Áreas**: suma del _nº de noticias_ de cada _{y}_ en cada _{x}_. \n\n **Color**: diferencia cada _{y}_ \n\n **Importante**: la aportación de cada _{y}_ al total del _nº de noticias_ en cada _{x}_ está marcada por el área comprendida entre su línea y la inmediatamente inferior.")
 
-                with col2:
-                    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
+		    if st.button("❌ Ocultar"):
+			texto.empty()
+	    show_hide_text()  
+
+	    st.plotly_chart(area(x,y), use_container_width=True)     
+
+
+    else:
+	st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+
+	col1, col2, col3 = st.columns((1,3,1))
+
+	with col2:
+	    st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)    
                  
-        except:
+        # except:
 
-            st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
+            # st.write("<h1 align='center'>❌ No hay datos para los filtros que has aplicado ❌</h1>", unsafe_allow_html=True)
 
-            col1, col2, col3 = st.columns((1,3,1))
+            # col1, col2, col3 = st.columns((1,3,1))
 
-            with col2:
-                st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
+            # with col2:
+            #     st.image(f"data:image/png;base64,{b64_1}", use_column_width=True)
 
         
     else:
