@@ -759,7 +759,7 @@ elif app_mode == '💻 Web':
                                 texto.empty()
                     show_hide_text()  
 
-    st.plotly_chart(barras_perc(x,y), use_container_width=True)   
+    	st.plotly_chart(barras_perc(x,y), use_container_width=True)   
 
                 with st.expander('Treemap', expanded=True): 
 
